@@ -47,6 +47,7 @@ sudo apt-get update && sudo apt-get upgrade -y
 sudo apt install python3-pip -y
 sudo pip3 install -U pip
 sudo apt-get install -y mediainfo
+sudo apt install ffmpeg
 ```
 
 Dependencies:
