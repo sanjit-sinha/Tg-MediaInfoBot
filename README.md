@@ -17,7 +17,7 @@
 - `/m or /mediainfo  ` - Type link after command or reply to telegram file to generate Mediainfo.
 - `/ss or /screenshot` - Type link after command or reply to telegram video file to generate screenshots.
 - `/paste` - paste your text in katb.in
-- few more commands like `/start` `/help` `/py` `/exec` etc
+- few more commands like `/start` `/help` `/py` `/exec` `/update` etc
 
 Add number of frames you want to generate after `|` flag. Example: `/ss [video file link] | 10` (Default 5 and Max 15)
 
