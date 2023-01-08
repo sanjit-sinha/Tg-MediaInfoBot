@@ -85,7 +85,7 @@ class GoogleDriveHelper:
 	    file_id = self.get_id(gdrive_url)
 	    
 	    try:
-	    	service = build('drive', 'v3', credentials=credentials)
+	    	service = build('drive', 'v3', cache_discovery=False, credentials=credentials)
 	    	metadata = service.files().get(fileId=file_id, fields='name, size, mimeType', supportsAllDrives=True).execute()
 	    	
 	    except HttpError as error:
