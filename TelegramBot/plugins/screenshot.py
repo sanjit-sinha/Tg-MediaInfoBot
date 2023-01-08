@@ -195,7 +195,7 @@ async def gdrive_screenshot(message, frame_count, url):
     except MessageNotModified: pass
     except Exception as error:
         await replymsg.edit(
-            f"Something went wrong with the given Gdrive link. Make sure the links is public and not rate limited.{error}")
+            f"Something went wrong with the given Gdrive link. Make sure the links is public and not rate limited.")
 
 
 
