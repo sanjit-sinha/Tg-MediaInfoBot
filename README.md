@@ -48,6 +48,10 @@ sudo apt install python3-pip -y
 sudo pip3 install -U pip
 ```
 
+Dependencies:
+- Python 3.9 or greater
+- FFmpeg
+
 Cloning Github Respository and Starting the Bot in Server.
  
 ```
