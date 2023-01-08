@@ -79,7 +79,8 @@ class GoogleDriveHelper:
 	def get_metadata(self, gdrive_url):
 	    """
 	    Return the  metadata of the given Google Drive File url.
-	    """	    
+	    """
+	
 	    credentials = self.get_credentials()
 	    file_id = self.get_id(gdrive_url)
 	    
@@ -95,7 +96,8 @@ class GoogleDriveHelper:
 	def get_bearer_token(self):
 	    """
 	    Return Authentication Bearer token to pass down as header for downloading Gdrive Links.
-	    """   
+	    """  
+	
 	    credentials = self.get_credentials()
 	    return credentials.token
 	    
