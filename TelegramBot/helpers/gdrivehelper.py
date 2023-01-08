@@ -15,8 +15,7 @@ class GdriveHelperException(Exception):
 
 
 class GoogleDriveHelper:
-	def __init__(self):
-		 
+	def __init__(self): 
 		 self.GDRIVE_TOKEN_FILE = "token.json"
 		 self.OAUTH_SCOPE = ['https://www.googleapis.com/auth/drive']
 
