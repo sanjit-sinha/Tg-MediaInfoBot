@@ -9,7 +9,3 @@ BOT_TOKEN = getenv("BOT_TOKEN")
 
 COMMAND_PREFIXES = prefixes = dict(prefixes=json.loads(getenv("COMMAND_PREFIXES")))
 OWNER_USERID = json.loads(getenv("OWNER_USERID"))
-
-
-
-
