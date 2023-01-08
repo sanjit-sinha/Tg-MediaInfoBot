@@ -9,7 +9,7 @@ pyrate_limiter
 cachetools 
 aiofiles
 uvloop
-urlib
+urllib3
 httpx
 requests
 bs4
