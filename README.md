@@ -46,11 +46,14 @@ Upgrading, Updating and setting up required packages in Server.
 sudo apt-get update && sudo apt-get upgrade -y
 sudo apt install python3-pip -y
 sudo pip3 install -U pip
+sudo apt-get install -y mediainfo
+sudo apt-get install ffmpeg
 ```
 
 Dependencies:
 - Python 3.9 or greater
 - FFmpeg
+- mediainfo
 
 Cloning Github Respository and Starting the Bot in Server.
  
