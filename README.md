@@ -30,7 +30,7 @@ Note: Generating screenshots from some drive link and direct download link is no
 
 | ![](https://te.legra.ph/file/9a29440d0a8544408f28f.jpg) | ![](https://te.legra.ph/file/3d81bf56ab50635fdcb45.jpg)|
 |--------------------------------------------------------|--------------------------------------------------------|
-| ![](https://te.legra.ph/file/54454be994d4311bcf20e.jpg)) | ![](https://te.legra.ph/file/cdc73890b2693686b3d2b.jpg) |
+| ![](https://te.legra.ph/file/54454be994d4311bcf20e.jpg)| ![](https://te.legra.ph/file/cdc73890b2693686b3d2b.jpg) |
 
 ------
 
