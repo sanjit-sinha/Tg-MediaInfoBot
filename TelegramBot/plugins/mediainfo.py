@@ -31,7 +31,7 @@ async def gdrive_mediainfo(client, message, url):
         metadata = GD.get_metadata(url)
         file_id = GD.get_id(url) 
           
-        service = build('drive', 'v3', credentials=GD.get_credentials())    
+        service = build('drive', 'v3', cache_discovery=False, credentials=GD.get_credentials())    
         request = service.files().get_media(fileId=file_id)
         
         reply_msg = await message.reply_text("Generating Mediainfo, Please wait..", quote=True)       
