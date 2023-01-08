@@ -1,9 +1,3 @@
-"""
-More about python decorators.
-https://www.geeksforgeeks.org/decorators-in-python/
-https://realpython.com/primer-on-python-decorators/
-"""
-
 from pyrogram.types import Message, CallbackQuery
 from TelegramBot.helpers.functions import isAdmin
 from TelegramBot.helpers.ratelimiter import RateLimiter 
