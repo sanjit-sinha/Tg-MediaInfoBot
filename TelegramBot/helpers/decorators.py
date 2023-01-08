@@ -1,5 +1,4 @@
 from pyrogram.types import Message, CallbackQuery
-from TelegramBot.helpers.functions import isAdmin
 from TelegramBot.helpers.ratelimiter import RateLimiter 
 from TelegramBot.config import *
 from typing import Callable, Union
