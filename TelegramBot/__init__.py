@@ -15,7 +15,7 @@ BotStartTime = time.time()
 
 VERSION_ASCII ="""
   =============================================================
-  You MUST need to be on python 3.7 or above, shutting down the bot...
+  You MUST need to be on python 3.9 or above, shutting down the bot...
   =============================================================
   """
   
