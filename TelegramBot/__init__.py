@@ -19,7 +19,7 @@ VERSION_ASCII ="""
   =============================================================
   """
   
-if sys.version_info[0] < 3 or sys.version_info[1] < 7:
+if sys.version_info[0] < 3 or sys.version_info[1] < 9:
     LOGGER(__name__).critical(VERSION_ASCII)
     sys.exit(1)
     
