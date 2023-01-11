@@ -76,7 +76,7 @@ def get_readable_bitrate(bitrate_kbps):
 
 def get_readable_filesize(num):
     
-    for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
+    for x in {'bytes', 'KB', 'MB', 'GB', 'TB'}:
         if num < 1024.0:
         	return "%3.1f %s" % (num, x)
 
@@ -89,11 +89,9 @@ def get_readable_filesize(num):
 def makedir(name: str):
     if os.path.exists(name):
     	shutil.rmtree(name)
-    	os.mkdir(name)
-    else:
-    	os.mkdir(name)
-        
-   
+    os.mkdir(name)
+
+
 
 def remove_N(seq):
     i = 1
@@ -102,5 +100,4 @@ def remove_N(seq):
         else: i += 1
             
 def randstr():
-    rand_string = ''.join(random.choices(string.ascii_lowercase + string.digits, k=7))
-    return rand_string
+    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=7))
