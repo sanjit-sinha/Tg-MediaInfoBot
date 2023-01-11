@@ -21,9 +21,7 @@ async def update(_, message: Message):
     LOGGER(__name__).info("Bot Updated with latest commits. Restarting now..")
     await msg.edit("Changes pulled with latest commits. Restarting bot now... ")
     os.execl(sys.executable, sys.executable, "-m", "TelegramBot")
-    sys.exit()
 
-    
 
 commands = ["restart"]
 @Client.on_message(filters.command(commands, **prefixes))
@@ -37,4 +35,3 @@ async def restart(_, message: Message):
     LOGGER(__name__).info("Restarting the bot. shutting down this instance")
     await message.reply_text("Starting a new instance and shutting down this one.", quote=True)
     os.execl(sys.executable, sys.executable, "-m", "TelegramBot")
-    sys.exit()

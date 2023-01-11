@@ -252,9 +252,8 @@ async def telegram_screenshot(client, message, frame_count):
     mime = media.mime_type
     size = media.file_size
 
-    if message.media.value == "document":
-        if "video" not in mime:
-            return await message.reply_text("can only generate screenshots from video file....", quote=True)
+    if message.media.value == "document" and "video" not in mime:
+        return await message.reply_text("can only generate screenshots from video file....", quote=True)
 
     # Dowloading partial file.
     replymsg = await message.reply_text(f"Downloading partial video file....", quote=True)
@@ -271,7 +270,7 @@ async def telegram_screenshot(client, message, frame_count):
 
         downloaded_percentage = 25
 
-    await replymsg.edit(f"Partial file downloaded....")
+    await replymsg.edit("Partial file downloaded....")
     # Partial file downloaded
 
     mediainfo_json = json.loads(subprocess.check_output(["mediainfo", file_name, "--Output=JSON"]).decode("utf-8"))
@@ -291,7 +290,7 @@ async def telegram_screenshot(client, message, frame_count):
         
         
         
-mediainfo_usage = f"Generates video frame screenshot from GoogleDrive links, Telegram files or direct download links."
+mediainfo_usage = "Generates video frame screenshot from GoogleDrive links, Telegram files or direct download links."
 commands = ["screenshot", "ss"]
 
 @Client.on_message(filters.command(commands, **prefixes))
