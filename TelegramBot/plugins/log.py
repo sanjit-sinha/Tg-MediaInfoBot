@@ -1,18 +1,19 @@
-from TelegramBot.helpers.decorators import ratelimiter,  dev_commands 
+from TelegramBot.helpers.decorators import ratelimiter, dev_commands
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from TelegramBot.config import prefixes 
-
+from TelegramBot.config import prefixes
 
 commands = ["log", "logs"]
+
+
 @Client.on_message(filters.command(commands, **prefixes))
-@dev_commands 
+@dev_commands
 @ratelimiter
 async def log(client: Client, message: Message):
     """
     upload log file of the bot.
     """
-    
+
     try:
         await client.send_document(message.chat.id, "logs.txt", caption="logs.txt", reply_to_message_id=message.id)
     except Exception as error:

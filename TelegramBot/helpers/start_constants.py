@@ -2,9 +2,9 @@ from TelegramBot.version import (__python_version__, __version__, __pyro_version
 
 
 COMMAND_TEXT = """🗒️ Documentation for commands available to user's 
-	
+
 • /start: To Get start message and help guide. 
-	
+
 • /alive: To check if bot is alive or not.
 
 • /paste: paste text to katb.in website.
@@ -30,7 +30,7 @@ ABOUT_CAPTION = f"""• Python version : {__python_version__}
 
 START_ANIMATION = "https://telegra.ph/file/c0857672b427bec8542f6.mp4"
 
-START_CAPTION = """Hey there!! I am simple Telegram Bot wich is made for the purpose for generating video files frames and mediainfo from Telegram files and links"""
+START_CAPTION = """Hey there!! I am simple Telegram Bot which is made for the purpose for generating video files frames and mediainfo from Telegram files and links"""
 
 
 

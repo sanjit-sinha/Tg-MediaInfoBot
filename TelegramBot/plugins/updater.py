@@ -1,14 +1,13 @@
-from TelegramBot.helpers.decorators import dev_commands,ratelimiter
+from TelegramBot.helpers.decorators import dev_commands, ratelimiter
 from TelegramBot.logging import LOGGER
-from TelegramBot.config import prefixes 
+from TelegramBot.config import prefixes
 from pyrogram import filters, Client
 from pyrogram.types import Message
 import sys
 import os
 
 
-commands = ["update"]
-@Client.on_message(filters.command(commands, **prefixes))
+@Client.on_message(filters.command("update", **prefixes))
 @dev_commands
 @ratelimiter
 async def update(_, message: Message):
@@ -23,8 +22,7 @@ async def update(_, message: Message):
     os.execl(sys.executable, sys.executable, "-m", "TelegramBot")
 
 
-commands = ["restart"]
-@Client.on_message(filters.command(commands, **prefixes))
+@Client.on_message(filters.command("restart", **prefixes))
 @dev_commands
 @ratelimiter
 async def restart(_, message: Message):
