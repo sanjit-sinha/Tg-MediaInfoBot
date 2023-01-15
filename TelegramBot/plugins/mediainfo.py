@@ -4,8 +4,8 @@ from TelegramBot.helpers.pasting_services import katbin_paste
 from TelegramBot.helpers.functions import *
 from TelegramBot.config import prefixes
 
-from pyrogram import Client, filters
 from pyrogram.types import Message
+from pyrogram import Client, filters
 
 from googleapiclient.http import MediaIoBaseDownload
 from googleapiclient.discovery import build
@@ -208,12 +208,12 @@ async def telegram_mediainfo(client, message):
                                  quote=True)
 
 
-commands = ["mediainfo", "m"]
-mediainfo_usage = f"**Generate mediainfo from Google Drive Links, Telegram files or direct download links. Reply to any telegram file or just pass the link after the command."
 
 
-@Client.on_message(filters.command(commands, **prefixes))
+@Client.on_message(filters.command( ["mediainfo", "m"], **prefixes))
 async def mediainfo(client, message: Message):
+    mediainfo_usage = f"**Generate mediainfo from Google Drive Links, Telegram files or direct download links. Reply to any telegram file or just pass the link after the command."
+    
     if message.reply_to_message:
         return await telegram_mediainfo(client, message)
 
