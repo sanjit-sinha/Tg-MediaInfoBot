@@ -2,10 +2,12 @@ from logging.handlers import RotatingFileHandler
 import logging
 import os
 
-#removing old logs file if they exist.
-try: os.remove("logs.txt")
-except: pass
-    
+# removing old logs file if they exist.
+try:
+    os.remove("logs.txt")
+except:
+    pass
+
 logging.basicConfig(
     level=logging.INFO,
     format="[%(asctime)s - %(levelname)s] - %(name)s - %(message)s",
@@ -16,6 +18,7 @@ logging.basicConfig(
 
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
 logging.getLogger('googleapicliet.discovery_cache').setLevel(logging.ERROR)
+
 
 def LOGGER(name: str) -> logging.Logger:
     return logging.getLogger(name)
