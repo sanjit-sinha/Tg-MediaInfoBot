@@ -30,7 +30,7 @@ ABOUT_CAPTION = f"""• Python version : {__python_version__}
 
 START_ANIMATION = "https://telegra.ph/file/c0857672b427bec8542f6.mp4"
 
-START_CAPTION = """Hey there!! I am simple Telegram Bot which is made for the purpose for generating video files frames and mediainfo from Telegram files and links"""
+START_CAPTION = """Hey there! I am a simple Telegram Bot which is made for the purpose of generating video files' frames and mediainfo from Telegram files and Google Drive links."""
 
 
 
