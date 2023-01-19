@@ -204,8 +204,7 @@ async def telegram_mediainfo(client, message):
 
     except:
         await reply_msg.delete()
-        await message.reply_text(f"Something went wrong while generating Mediainfo of replied Telegram file.",
-                                 quote=True)
+        await message.reply_text(f"Something went wrong while generating Mediainfo of replied Telegram file.", quote=True)
 
 
 
