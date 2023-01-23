@@ -35,7 +35,7 @@ async def slowpics_collection(message, file_name, path):
         "public": "false",
     }
 
-    for i in range(0, len(img_list)):
+    for i in range(len(img_list)):
         data[f"images[{i}].name"] = img_list[i]
         data[f"images[{i}].file"] = (
             img_list[i],
@@ -155,7 +155,9 @@ async def gdrive_screenshot(message, frame_count, url):
     Generates Screenshots From Google Drive links.
     """
 
-    replymsg = await message.reply_text(f"Checking your given Gdrive Link...", quote=True)
+    replymsg = await message.reply_text(
+        "Checking your given Gdrive Link...", quote=True
+    )
 
     try:
         GD = GoogleDriveHelper()
@@ -187,7 +189,8 @@ async def gdrive_screenshot(message, frame_count, url):
         pass
     except Exception:
         await replymsg.edit(
-            f"Something went wrong with the given Gdrive link. Make sure the links is public and not rate limited.")
+            "Something went wrong with the given Gdrive link. Make sure the links is public and not rate limited."
+        )
 
 
 async def ddl_screenshot(message, frame_count, url):
@@ -195,12 +198,14 @@ async def ddl_screenshot(message, frame_count, url):
     Generates Screenshots from Direct Download links.
     """
 
-    replymsg = await message.reply_text(f"Checking direct download url....**", quote=True)
+    replymsg = await message.reply_text(
+        "Checking direct download url....**", quote=True
+    )
 
     try:
 
         file_url = f"'{url}'"
-        file_name = re.search(".+/(.+)", url).group(1)
+        file_name = re.search(".+/(.+)", url)[1]
 
         total_duration = subprocess.check_output(
             f"ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 {file_url}",
@@ -216,13 +221,15 @@ async def ddl_screenshot(message, frame_count, url):
             headers,
             file_name,
             frame_count,
-            file_duration=float(total_duration))
+            file_duration=total_duration,
+        )
 
     except MessageNotModified:
         pass
     except Exception:
         return await replymsg.edit(
-            f"Something went wrong with the given url. Make sure that url is downloadable video file wich is non ip specific and should return proper response code without any required headers")
+            "Something went wrong with the given url. Make sure that url is downloadable video file wich is non ip specific and should return proper response code without any required headers"
+        )
 
 
 async def telegram_screenshot(client, message, frame_count):
@@ -251,7 +258,9 @@ async def telegram_screenshot(client, message, frame_count):
         return await message.reply_text("can only generate screenshots from video file....", quote=True)
 
     # Downloading partial file.
-    replymsg = await message.reply_text(f"Downloading partial video file....", quote=True)
+    replymsg = await message.reply_text(
+        "Downloading partial video file....", quote=True
+    )
 
     if int(size) <= 200000000:
         await message.download(os.path.join(os.getcwd(), file_name))
@@ -298,8 +307,7 @@ async def screenshot(client, message: Message):
         except:
             frame_count = 5
 
-        if frame_count > 15:
-            frame_count = 15
+        frame_count = min(frame_count, 15)
         return await telegram_screenshot(client, message, frame_count)
 
     if len(message.command) < 2:
@@ -315,9 +323,7 @@ async def screenshot(client, message: Message):
             frame_count = int(frame_count)
         except:
             frame_count = 5
-        if frame_count > 15:
-            frame_count = 15
-
+        frame_count = min(frame_count, 15)
     else:
         frame_count = 5
         url = user_input.split("|")[0].strip()

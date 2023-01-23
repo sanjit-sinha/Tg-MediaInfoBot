@@ -24,10 +24,7 @@ class GoogleDriveHelper:
 	    """
 
         pattern = 'https?://(drive\.google\.com\/)\S+'
-        if re.search(pattern, gdrive_url):
-            return True
-        else:
-            return False
+        return bool(re.search(pattern, gdrive_url))
 
     @staticmethod
     def is_gdrive_folder(gdrive_url: str) -> bool:
@@ -35,8 +32,7 @@ class GoogleDriveHelper:
 	    Check if the given Google Drive url is folder or not.
 	    """
 
-        value = bool("folders" in gdrive_url)
-        return value
+        return "folders" in gdrive_url
 
     @staticmethod
     def get_id(gdrive_url: str) -> str:
@@ -45,8 +41,7 @@ class GoogleDriveHelper:
 	    """
 
         try:
-            file_id = re.search(r'([-\w]{25,})', gdrive_url).group(0)
-            return file_id
+            return re.search(r'([-\w]{25,})', gdrive_url)[0]
         except Exception as error:
             raise GdriveHelperException("Drive ID not found") from error
 
@@ -60,15 +55,18 @@ class GoogleDriveHelper:
         if not os.path.exists(self.GDRIVE_TOKEN_FILE):
             raise GdriveHelperException("token.json not found")
 
-        else:
-            try:
-                credentials = Credentials.from_authorized_user_info(access_token, self.OAUTH_SCOPE)
-            except:
-                raise GdriveHelperException("Something wrong with the given token.json file.")
+        try:
+            credentials = Credentials.from_authorized_user_info(access_token, self.OAUTH_SCOPE)
+        except:
+            raise GdriveHelperException("Something wrong with the given token.json file.")
 
-        if credentials is None or not credentials.valid:
-            if credentials and credentials.expired and credentials.refresh_token:
-                credentials.refresh(Request())
+        if (
+            (credentials is None or not credentials.valid)
+            and credentials
+            and credentials.expired
+            and credentials.refresh_token
+        ):
+            credentials.refresh(Request())
 
         return credentials
 
@@ -100,6 +98,4 @@ class GoogleDriveHelper:
     def get_ddl_link(self, gdrive_link):
 
         file_id = self.get_id(gdrive_link)
-        ddl_link = f"https://www.googleapis.com/drive/v3/files/{file_id}\?supportsAllDrives\=true\&alt\=media"
-        # "https://www.googleapis.com/drive/v3/files/{file_id}?supportsAllDrives\=true&alt=media"
-        return ddl_link
+        return f"https://www.googleapis.com/drive/v3/files/{file_id}\?supportsAllDrives\=true\&alt\=media"

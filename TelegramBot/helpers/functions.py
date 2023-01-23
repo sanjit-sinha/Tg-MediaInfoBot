@@ -40,12 +40,11 @@ def get_readable_bytes(value, digits=2, delim="", postfix=""):
         return None
     chosen_unit = "B"
     for unit in ("KiB", "MiB", "GiB", "TiB"):
-        if value > 1000:
-            value /= 1024
-            chosen_unit = unit
-        else:
+        if value <= 1000:
             break
-    return f"{value:.{digits}f}" + delim + chosen_unit + postfix
+        value /= 1024
+        chosen_unit = unit
+    return f"{value:.{digits}f}{delim}{chosen_unit}{postfix}"
 
 
 def get_readable_size(size):
@@ -58,16 +57,15 @@ def get_readable_size(size):
     while size > power:
         size /= power
         raised_to_pow += 1
-    return str(round(size, 2)) + " " + dict_power_n[raised_to_pow] + "B"
+    return f"{str(round(size, 2))} {dict_power_n[raised_to_pow]}B"
 
 
 def get_readable_bitrate(bitrate_kbps):
-    if bitrate_kbps > 10000:
-        bitrate = str(round(bitrate_kbps / 1000, 2)) + ' ' + 'Mb/s'
-    else:
-        bitrate = str(round(bitrate_kbps, 2)) + ' ' + 'kb/s'
-
-    return bitrate
+    return (
+        f'{str(round(bitrate_kbps / 1000, 2))} Mb/s'
+        if bitrate_kbps > 10000
+        else f'{str(round(bitrate_kbps, 2))} kb/s'
+    )
 
 
 def get_readable_filesize(num):

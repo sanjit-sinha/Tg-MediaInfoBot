@@ -9,7 +9,13 @@ START_BUTTON = [
         InlineKeyboardButton("📖 Commands", callback_data="COMMAND_BUTTON"),
         InlineKeyboardButton("👨‍💻 About me", callback_data="ABOUT_BUTTON"),
     ],
-    [InlineKeyboardButton("🔭 Original Repo", url=f"https://github.com/sanjit-sinha/Tg-MediaInfoBot")]]
+    [
+        InlineKeyboardButton(
+            "🔭 Original Repo",
+            url="https://github.com/sanjit-sinha/Tg-MediaInfoBot",
+        )
+    ],
+]
 
 GOBACK_1_BUTTON = [[InlineKeyboardButton("🔙 Go Back", callback_data="START_BUTTON")]]
 

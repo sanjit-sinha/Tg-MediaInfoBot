@@ -45,15 +45,15 @@ async def gdrive_mediainfo(_, message, url):
         lines = mediainfo.splitlines()
         for i in range(len(lines)):
             if 'Complete name' in lines[i]:
-                lines[i] = re.sub(r": .+", ': ' + filename, lines[i])
+                lines[i] = re.sub(r": .+", f': {filename}', lines[i])
 
             elif 'File size' in lines[i]:
-                lines[i] = re.sub(r": .+", ': ' + filesize, lines[i])
+                lines[i] = re.sub(r": .+", f': {filesize}', lines[i])
 
             elif 'Overall bit rate' in lines[i] and 'Overall bit rate mode' not in lines[i]:
                 duration = float(mediainfo_json['media']['track'][0]['Duration'])
                 bitrate = get_readable_bitrate(float(metadata['size']) * 8 / (duration * 1000))
-                lines[i] = re.sub(r": .+", ': ' + bitrate, lines[i])
+                lines[i] = re.sub(r": .+", f': {bitrate}', lines[i])
 
             elif 'IsTruncated' in lines[i] or 'FileExtension_Invalid' in lines[i]:
                 lines[i] = ''
@@ -83,7 +83,7 @@ async def ddl_mediainfo(_, message, url):
     """
 
     try:
-        filename = re.search(".+/(.+)", url).group(1)
+        filename = re.search(".+/(.+)", url)[1]
         reply_msg = await message.reply_text("Generating Mediainfo, Please wait..", quote=True)
 
         with requests.get(url, stream=True) as r:
@@ -98,15 +98,19 @@ async def ddl_mediainfo(_, message, url):
         lines = mediainfo.splitlines()
         for i in range(len(lines)):
             if 'Complete name' in lines[i]:
-                lines[i] = re.sub(r": .+", ': ' + unquote(filename), lines[i])
+                lines[i] = re.sub(r": .+", f': {unquote(filename)}', lines[i])
 
             elif 'File size' in lines[i]:
-                lines[i] = re.sub(r": .+", ': ' + get_readable_filesize(float(filesize)), lines[i])
+                lines[i] = re.sub(
+                    r": .+",
+                    f': {get_readable_filesize(float(filesize))}',
+                    lines[i],
+                )
 
             elif 'Overall bit rate' in lines[i] and 'Overall bit rate mode' not in lines[i]:
                 duration = float(mediainfo_json['media']['track'][0]['Duration'])
                 bitrate = get_readable_bitrate(float(filesize) * 8 / (duration * 1000))
-                lines[i] = re.sub(r": .+", ': ' + bitrate, lines[i])
+                lines[i] = re.sub(r": .+", f': {bitrate}', lines[i])
 
             elif 'IsTruncated' in lines[i] or 'FileExtension_Invalid' in lines[i]:
                 lines[i] = ''
@@ -125,8 +129,10 @@ async def ddl_mediainfo(_, message, url):
 
     except:
         await reply_msg.delete()
-        return await message.reply_text(f"Something went wrong while generating Mediainfo from the given url.",
-                                        quote=True)
+        return await message.reply_text(
+            "Something went wrong while generating Mediainfo from the given url.",
+            quote=True,
+        )
 
 
 async def telegram_mediainfo(client, message):
@@ -176,7 +182,7 @@ async def telegram_mediainfo(client, message):
         lines = mediainfo.splitlines()
         for i in range(len(lines)):
             if 'File size' in lines[i]:
-                lines[i] = re.sub(r": .+", ': ' + readable_size, lines[i])
+                lines[i] = re.sub(r": .+", f': {readable_size}', lines[i])
 
             elif 'Overall bit rate' in lines[i] and 'Overall bit rate mode' not in lines[i]:
 
@@ -184,7 +190,7 @@ async def telegram_mediainfo(client, message):
                 bitrate_kbps = (size * 8) / (duration * 1000)
                 bitrate = get_readable_bitrate(bitrate_kbps)
 
-                lines[i] = re.sub(r": .+", ': ' + bitrate, lines[i])
+                lines[i] = re.sub(r": .+", f': {bitrate}', lines[i])
 
             elif 'IsTruncated' in lines[i] or 'FileExtension_Invalid' in lines[i]:
                 lines[i] = ''
@@ -204,7 +210,10 @@ async def telegram_mediainfo(client, message):
 
     except:
         await reply_msg.delete()
-        await message.reply_text(f"Something went wrong while generating Mediainfo of replied Telegram file.", quote=True)
+        await message.reply_text(
+            "Something went wrong while generating Mediainfo of replied Telegram file.",
+            quote=True,
+        )
 
 
 
