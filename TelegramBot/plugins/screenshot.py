@@ -134,7 +134,7 @@ async def generate_ss_from_link(
         timestamp = str(datetime.timedelta(seconds=int(random_timestamp)))
         outputpath = f"screenshot_{rand_str}/{(frame_count - loop_count) + 1}.png"
 
-        ffmpeg_command = f"ffmpeg -headers '{headers}' -y -ss {timestamp} -i {file_url} -vframes 1 -q:v 2 -noaccurate_seek {outputpath}"
+        ffmpeg_command = f"ffmpeg -headers '{headers}' -y -ss {timestamp} -i {file_url} -vframes 1 {outputpath}"
         args = shlex.split(ffmpeg_command)
 
         shell = await asyncio.create_subprocess_exec(*args, stdout=asyncio.subprocess.PIPE,
