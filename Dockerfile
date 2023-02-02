@@ -18,4 +18,4 @@ RUN locale-gen en_US.UTF-8
 
 COPY . .
 
-CMD ["bash","start.sh"]
+CMD ["bash","start"]
