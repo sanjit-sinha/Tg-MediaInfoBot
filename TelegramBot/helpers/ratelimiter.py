@@ -1,27 +1,23 @@
 from typing import Union
-from pyrate_limiter import (
-    BucketFullException,
-    Duration,
-    Limiter,
-    MemoryListBucket,
-    RequestRate,
-)
+
+from pyrate_limiter import (BucketFullException, Duration, Limiter,
+                            MemoryListBucket, RequestRate)
 
 
 class RateLimiter:
     """
-    Impliments rate limit logic using leaky bucket
-    algorithm, via pyrate_limiter. 
+    Implement rate limit logic using leaky bucket
+    algorithm, via pyrate_limiter.
     (https://pypi.org/project/pyrate-limiter/)
     """
 
     def __init__(self) -> None:
 
-        # 3 requests per seconds
-        self.second_rate = RequestRate(3, Duration.SECOND)
+        # 2 requests per seconds
+        self.second_rate = RequestRate(2, Duration.SECOND)
 
-        # 20 requests per minute.
-        self.minute_rate = RequestRate(20, Duration.MINUTE)
+        # 17 requests per minute.
+        self.minute_rate = RequestRate(17, Duration.MINUTE)
 
         # 1000 requests per hour
         self.hourly_rate = RequestRate(1000, Duration.HOUR)
@@ -33,7 +29,8 @@ class RateLimiter:
             self.minute_rate,
             self.hourly_rate,
             self.daily_rate,
-            bucket_class=MemoryListBucket)
+            bucket_class=MemoryListBucket,
+        )
 
     async def acquire(self, userid: Union[int, str]) -> bool:
         """
