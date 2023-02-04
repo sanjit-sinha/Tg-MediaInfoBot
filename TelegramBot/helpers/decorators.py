@@ -42,19 +42,6 @@ def ratelimiter(func: Callable) -> Callable:
     return decorator
 
 
-def dev_commands(func: Callable) -> Callable:
-    """
-    Restricts user's from executing certain developer's related commands.
-    """
-
-    @wraps(func)
-    async def decorator(client: Client, message: Message):
-        if message.from_user.id in OWNER_USERID:
-            return await func(client, message)
-
-    return decorator
-
-
 def errors(func: Callable) -> Callable:
     """
     Try and catch error of any function.
