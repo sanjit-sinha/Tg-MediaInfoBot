@@ -214,7 +214,6 @@ async def mediainfo(client, message: Message):
         return await message.reply_text(mediainfo_usage, quote=True)
         
     user_input = message.text.split(None, 1)[1]    
-    
     if url_match := re.search(r"https://drive\.google\.com/\S+", user_input):
     	url = url_match.group(0)
     	return await gdrive_mediainfo(client, message, url)      	
