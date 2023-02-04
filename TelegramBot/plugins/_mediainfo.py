@@ -147,8 +147,7 @@ async def telegram_mediainfo(client, message):
     elif message.media.value == 'voice':
         media = message.voice
 
-    else:
-        return await message.reply_text("This type of media is not supported for generating Mediainfo.**", quote=True)
+    else: return await message.reply_text("This type of media is not supported for generating Mediainfo.**", quote=True)
 
     filename = str(media.file_name)
     mime = media.mime_type
