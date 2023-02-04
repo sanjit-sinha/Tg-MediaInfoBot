@@ -1,18 +1,19 @@
-from TelegramBot.helpers.decorators import dev_commands, ratelimiter
-from TelegramBot.logging import LOGGER
-from TelegramBot.config import prefixes
-from pyrogram import filters, Client
+sfrom pyrogram import Client, filters
 from pyrogram.types import Message
+
+from TelegramBot.helpers.decorators import ratelimiter
+from TelegramBot.helpers.filters import dev_cmd
+from TelegramBot.logging import LOGGER
+
 import sys
 import os
 
 
-@Client.on_message(filters.command("update", **prefixes))
-@dev_commands
+@Client.on_message(filters.command("update") & dev_cmd)
 @ratelimiter
 async def update(_, message: Message):
     """
-    Update the bot with latest commit changes from GitHub.
+    Update the bot with the latest commit changes from GitHub.
     """
 
     msg = await message.reply_text("Pulling changes with latest commits...", quote=True)
@@ -22,14 +23,14 @@ async def update(_, message: Message):
     os.execl(sys.executable, sys.executable, "-m", "TelegramBot")
 
 
-@Client.on_message(filters.command("restart", **prefixes))
-@dev_commands
+@Client.on_message(filters.command("restart") & dev_cmd)
 @ratelimiter
 async def restart(_, message: Message):
     """
-    This function just Restart the bot.
+    Just Restart the bot and update the bot with local changes.
     """
 
     LOGGER(__name__).info("Restarting the bot. shutting down this instance")
-    await message.reply_text("Starting a new instance and shutting down this one.", quote=True)
+    await message.reply_text(
+        "Starting a new instance and shutting down this one...", quote=True)
     os.execl(sys.executable, sys.executable, "-m", "TelegramBot")
