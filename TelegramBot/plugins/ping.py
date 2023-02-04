@@ -21,15 +21,6 @@ START_BUTTON = [
 GOBACK_1_BUTTON = [[InlineKeyboardButton("🔙 Go Back", callback_data="START_BUTTON")]]
 
 
-@Client.on_message(filters.command(["start", "help"]))
-@ratelimiter
-async def start(_, message: Message):
-    return await message.reply_text(
-        START_CAPTION,
-        reply_markup=InlineKeyboardMarkup(START_BUTTON),
-        quote=True)
-
-
 @Client.on_callback_query(filters.regex("_BUTTON"))
 @ratelimiter
 async def botCallbacks(_, CallbackQuery):
@@ -47,6 +38,15 @@ async def botCallbacks(_, CallbackQuery):
 
     elif CallbackQuery.data == "COMMAND_BUTTON":
         await CallbackQuery.edit_message_text(COMMAND_TEXT, reply_markup=InlineKeyboardMarkup(GOBACK_1_BUTTON))
+        
+
+@Client.on_message(filters.command(["start", "help"]))
+@ratelimiter
+async def start(_, message: Message):
+    return await message.reply_text(
+        START_CAPTION,
+        reply_markup=InlineKeyboardMarkup(START_BUTTON),
+        quote=True)
        
 
 @Client.on_message(filters.command(["log", "logs"]) & dev_cmd)
