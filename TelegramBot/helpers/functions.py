@@ -30,6 +30,23 @@ def get_readable_time(seconds: int) -> str:
     result += f"{seconds}s "
     return result
 
+def get_readable_bytes(size: str) -> str:
+    """
+    Return a human readable file size from bytes.
+    """
+
+    dict_power_n = {0: "", 1: "Ki", 2: "Mi", 3: "Gi", 4: "Ti"}
+
+    if not size:
+        return ""
+    power = 2**10
+    raised_to_pow = 0
+
+    while size > power:
+        size /= power
+        raised_to_pow += 1
+
+    return f"{str(round(size, 2))} 
 
 def get_readable_bytes(value, digits=2, delim="", postfix=""):
     """
@@ -48,36 +65,17 @@ def get_readable_bytes(value, digits=2, delim="", postfix=""):
     return f"{value:.{digits}f}" + delim + chosen_unit + postfix
 
 
-def get_readable_size(size):
-    if not size:
-        return ""
-    power = 2 ** 10
-    raised_to_pow = 0
-    dict_power_n = {0: "", 1: "Ki", 2: "Mi", 3: "Gi", 4: "Ti"}
-
-    while size > power:
-        size /= power
-        raised_to_pow += 1
-    return str(round(size, 2)) + " " + dict_power_n[raised_to_pow] + "B"
-
-
 def get_readable_bitrate(bitrate_kbps):
+    """
+    Return a human-readable bitrate size.
+    """
+    
     if bitrate_kbps > 10000:
         bitrate = str(round(bitrate_kbps / 1000, 2)) + ' ' + 'Mb/s'
     else:
         bitrate = str(round(bitrate_kbps, 2)) + ' ' + 'kb/s'
 
     return bitrate
-
-
-def get_readable_filesize(num):
-    for x in {'bytes', 'KB', 'MB', 'GB', 'TB'}:
-        if num < 1024.0:
-            return "%3.1f %s" % (num, x)
-
-        num /= 1024.0
-
-    return "%3.1f %s" % (num, 'TB')
 
 
 def makedir(name: str):
