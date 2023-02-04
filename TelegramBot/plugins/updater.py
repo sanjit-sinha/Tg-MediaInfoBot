@@ -1,12 +1,10 @@
-sfrom pyrogram import Client, filters
+from pyrogram import Client, filters
 from pyrogram.types import Message
 
 from TelegramBot.helpers.decorators import ratelimiter
 from TelegramBot.helpers.filters import dev_cmd
 from TelegramBot.logging import LOGGER
-
-import sys
-import os
+import sys, os
 
 
 @Client.on_message(filters.command("update") & dev_cmd)
