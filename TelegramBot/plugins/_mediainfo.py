@@ -165,7 +165,7 @@ async def telegram_mediainfo(client, message):
 
     mediainfo = subprocess.check_output(['mediainfo', filename]).decode("utf-8")
     mediainfo_json = json.loads(subprocess.check_output(['mediainfo', filename, '--Output=JSON']).decode("utf-8"))
-    readable_size = get_readable_size(size)
+    readable_size = get_readables_bytes(size)
 
     try:
         lines = mediainfo.splitlines()
