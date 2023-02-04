@@ -1,7 +1,8 @@
 from TelegramBot.helpers.gdrivehelper import GoogleDriveHelper
-from TelegramBot.helpers.pasting_services import katbin_paste
+from TelegramBot.helpers.pasting_services import katbin_paste, telegraph_paste 
 from TelegramBot.helpers.functions import *
 
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.types import Message
 from pyrogram import Client, filters
 
@@ -30,12 +31,12 @@ async def gdrive_mediainfo(_, message, url):
         request = service.files().get_media(fileId=file_id)
 
         reply_msg = await message.reply_text("Generating Mediainfo, Please wait..", quote=True)
-        with open(f"{file_id}", "wb") as file:
+        with open(f"download/{file_id}", "wb") as file:
             downloader = MediaIoBaseDownload(file, request)
             downloader.next_chunk()
 
-        mediainfo = subprocess.check_output(['mediainfo', file_id]).decode("utf-8")
-        mediainfo_json = json.loads(subprocess.check_output(['mediainfo', file_id, '--Output=JSON']).decode("utf-8"))
+        mediainfo = subprocess.check_output(['mediainfo', "download/"+file_id]).decode("utf-8")
+        mediainfo_json = json.loads(subprocess.check_output(['mediainfo', "download/"+file_id, '--Output=JSON']).decode("utf-8"))
 
         filesize = get_readable_filesize(float(metadata['size']))
         filename = metadata['name']
@@ -57,16 +58,16 @@ async def gdrive_mediainfo(_, message, url):
                 lines[i] = ''
 
         remove_N(lines)
-        with open(f"{file_id}.txt", 'w') as f:
+        with open(f"download/{file_id}.txt", 'w') as f:
             f.write('\n'.join(lines))
 
-        with open(f"{file_id}.txt", "r+") as file:
+        with open(f"download/{file_id}.txt", "r+") as file:
             content = file.read()
-        output = await katbin_paste(content)
+        output = await telegraph_paste(content)
 
-        await reply_msg.edit(f"**File Name :** `{filename}`\n\n**Mediainfo :** {output}", disable_web_page_preview=True)
-        os.remove(f"{file_id}.txt")
-        os.remove(file_id)
+        await reply_msg.edit(f"**File Name :** `{filename}`\n\n**Mediainfo :** {output}", disable_web_page_preview=False)
+        os.remove(f"download/{file_id}.txt")
+        os.remove(f"dwonload/{file_id}")
 
     except:
         await reply_msg.delete()
@@ -74,6 +75,7 @@ async def gdrive_mediainfo(_, message, url):
             f"Something went wrong with that Gdrive url.\n\n ( make sure that the given drive url is non rate limited , public and not a folder )", quote=True)
 
 
+    
 async def ddl_mediainfo(_, message, url):
     """
     Generates Mediainfo from a Direct Download Link.
@@ -84,11 +86,11 @@ async def ddl_mediainfo(_, message, url):
         reply_msg = await message.reply_text("Generating Mediainfo, Please wait..", quote=True)
 
         with requests.get(url, stream=True) as r:
-            with open(filename, 'wb') as f:
+            with open(f"download/{filename}", 'wb') as f:
                 for chunk in r.iter_content(50000000): f.write(chunk); break
 
-        mediainfo = subprocess.check_output(['mediainfo', filename]).decode("utf-8")
-        mediainfo_json = json.loads(subprocess.check_output(['mediainfo', filename, '--Output=JSON']).decode("utf-8"))
+        mediainfo = subprocess.check_output(['mediainfo', "download/"+filename]).decode("utf-8")
+        mediainfo_json = json.loads(subprocess.check_output(['mediainfo', "download/"+filename, '--Output=JSON']).decode("utf-8"))
 
         filesize = requests.head(url).headers.get('content-length')
         lines = mediainfo.splitlines()
@@ -107,23 +109,24 @@ async def ddl_mediainfo(_, message, url):
             elif 'IsTruncated' in lines[i] or 'FileExtension_Invalid' in lines[i]:
                 lines[i] = ''
 
-        with open(f'{filename}.txt', 'w') as f:
+        with open(f'download/{filename}.txt', 'w') as f:
             f.write('\n'.join(lines))
 
-        with open(f"{filename}.txt", "r+") as file:
+        with open(f"download/{filename}.txt", "r+") as file:
             content = file.read()
-        output = await katbin_paste(content)
+        output = await telegraph_paste(content)
 
         await reply_msg.edit(f"**File Name :** `{unquote(filename)}`\n\n**Mediainfo :** {output}",
-                             disable_web_page_preview=True)
+                             disable_web_page_preview=False)
                              
-        os.remove(f"{filename}.txt")
-        os.remove(filename)
+        os.remove(f"download/{filename}.txt")
+        os.remove(f"download/{filename}")
 
     except Exception as error:
         await reply_msg.delete()
         return await message.reply_text(f"Something went wrong while generating Mediainfo from the given url. {error}", quote=True)
 
+    
 
 async def telegram_mediainfo(client, message):
     """
@@ -131,7 +134,6 @@ async def telegram_mediainfo(client, message):
     """
 
     message = message.reply_to_message
-
     if message.text:
         return await message.reply_text("Reply to a proper media file for generating Mediainfo.**", quote=True)
 
@@ -156,16 +158,16 @@ async def telegram_mediainfo(client, message):
     reply_msg = await message.reply_text("Generating Mediainfo, Please wait..", quote=True)
 
     if int(size) <= 50000000:
-        await message.download(os.path.join(os.getcwd(), filename))
+        await message.download(os.path.join(os.getcwd(), "download", filename))
 
     else:
         async for chunk in client.stream_media(message, limit=5):
-            with open(filename, 'ab') as f:
+            with open(f"download/{filename}", 'ab') as f:
                 f.write(chunk)
 
-    mediainfo = subprocess.check_output(['mediainfo', filename]).decode("utf-8")
-    mediainfo_json = json.loads(subprocess.check_output(['mediainfo', filename, '--Output=JSON']).decode("utf-8"))
-    readable_size = get_readables_bytes(size)
+    mediainfo = subprocess.check_output(['mediainfo', "download/"+filename]).decode("utf-8")
+    mediainfo_json = json.loads(subprocess.check_output(['mediainfo', "download/"+filename, '--Output=JSON']).decode("utf-8"))
+    readable_size = get_readable_bytes(size)
 
     try:
         lines = mediainfo.splitlines()
@@ -185,21 +187,23 @@ async def telegram_mediainfo(client, message):
                 lines[i] = ''
 
         remove_N(lines)
-        with open(f'{filename}.txt', 'w') as f:
+        with open(f'download/{filename}.txt', 'w') as f:
             f.write('\n'.join(lines))
 
-        with open(f"{filename}.txt", "r+") as file:
+        with open(f"download/{filename}.txt", "r+") as file:
             content = file.read()
 
-        output = await katbin_paste(content)
+        output = await telegraph_paste(content)
 
-        await reply_msg.edit(f"**File Name :** `{filename}`\n\n**Mediainfo :** {output}", disable_web_page_preview=True)
-        os.remove(f'{filename}.txt')
-        os.remove(filename)
+        await reply_msg.edit(f"**File Name :** `{filename}`\n\n**Mediainfo :** {output}", disable_web_page_preview=False)
+        os.remove(f'download/{filename}.txt')
+        os.remove(f"download/{filename}")
 
-    except:
+    except Exception as error:
         await reply_msg.delete()
-        await message.reply_text(f"Something went wrong while generating Mediainfo of replied Telegram file.", quote=True)
+        await message.reply_text(f"Something went wrong while generating Mediainfo of replied Telegram file. {error}", quote=True)
+
+
 
 
 @Client.on_message(filters.command( ["mediainfo", "m"]))
