@@ -1,8 +1,6 @@
-from TelegramBot.helpers.supported_url_regex import SUPPORTED_URL_REGEX
 from TelegramBot.helpers.gdrivehelper import GoogleDriveHelper
 from TelegramBot.helpers.pasting_services import katbin_paste
 from TelegramBot.helpers.functions import *
-from TelegramBot.config import prefixes
 
 from pyrogram.types import Message
 from pyrogram import Client, filters
@@ -73,8 +71,7 @@ async def gdrive_mediainfo(_, message, url):
     except:
         await reply_msg.delete()
         return await message.reply_text(
-            f"Something went wrong with that Gdrive url.\n\n ( make sure that the given drive url is non rate limited , public and not a folder )",
-            quote=True)
+            f"Something went wrong with that Gdrive url.\n\n ( make sure that the given drive url is non rate limited , public and not a folder )", quote=True)
 
 
 async def ddl_mediainfo(_, message, url):
@@ -94,14 +91,13 @@ async def ddl_mediainfo(_, message, url):
         mediainfo_json = json.loads(subprocess.check_output(['mediainfo', filename, '--Output=JSON']).decode("utf-8"))
 
         filesize = requests.head(url).headers.get('content-length')
-
         lines = mediainfo.splitlines()
         for i in range(len(lines)):
             if 'Complete name' in lines[i]:
                 lines[i] = re.sub(r": .+", ': ' + unquote(filename), lines[i])
 
             elif 'File size' in lines[i]:
-                lines[i] = re.sub(r": .+", ': ' + get_readable_filesize(float(filesize)), lines[i])
+                lines[i] = re.sub(r": .+", ': ' + get_readable_bytes(float(filesize)), lines[i])
 
             elif 'Overall bit rate' in lines[i] and 'Overall bit rate mode' not in lines[i]:
                 duration = float(mediainfo_json['media']['track'][0]['Duration'])
@@ -120,13 +116,13 @@ async def ddl_mediainfo(_, message, url):
 
         await reply_msg.edit(f"**File Name :** `{unquote(filename)}`\n\n**Mediainfo :** {output}",
                              disable_web_page_preview=True)
+                             
         os.remove(f"{filename}.txt")
         os.remove(filename)
 
-    except:
+    except Exception as error:
         await reply_msg.delete()
-        return await message.reply_text(f"Something went wrong while generating Mediainfo from the given url.",
-                                        quote=True)
+        return await message.reply_text(f"Something went wrong while generating Mediainfo from the given url. {error}", quote=True)
 
 
 async def telegram_mediainfo(client, message):
@@ -207,26 +203,28 @@ async def telegram_mediainfo(client, message):
         await message.reply_text(f"Something went wrong while generating Mediainfo of replied Telegram file.", quote=True)
 
 
-
-
-@Client.on_message(filters.command( ["mediainfo", "m"], **prefixes))
+@Client.on_message(filters.command( ["mediainfo", "m"]))
 async def mediainfo(client, message: Message):
     mediainfo_usage = f"**Generate mediainfo from Google Drive Links, Telegram files or direct download links. Reply to any telegram file or just pass the link after the command."
     
     if message.reply_to_message:
         return await telegram_mediainfo(client, message)
 
-    elif len(message.command) < 2:
+    if len(message.command) < 2:
         return await message.reply_text(mediainfo_usage, quote=True)
+        
+    user_input = message.text.split(None, 1)[1]    
+    
+    if url_match := re.search(r"https://drive\.google\.com/\S+", user_input):
+    	url = url_match.group(0)
+    	return await gdrive_mediainfo(client, message, url)      	
+    	
+    if url_match := re.search(r"https?://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])", user_input):
+    	url = url_match.group(0)
+    	return await ddl_mediainfo(client, message, url)
+    	    
+    else: return await message.reply_text("This type of link is not supported.", quote=True)
+    
+    
 
-    user_url = message.text.split(None, 1)[1].split(" ")[0]
-    for (key, value) in SUPPORTED_URL_REGEX.items():
-        if bool(re.search(FR"{key}", user_url)):
-
-            if value == "gdrive":
-                return await gdrive_mediainfo(client, message, url=user_url)
-
-            elif value == "ddl":
-                return await ddl_mediainfo(client, message, url=user_url)
-
-    return await message.reply_text("This type of URL is not supported.", quote=True)
+      
