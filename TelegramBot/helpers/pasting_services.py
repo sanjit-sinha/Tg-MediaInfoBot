@@ -42,3 +42,15 @@ async def telegraph_paste(content: str, title="TelegramBot") -> str:
     try: await telegraph.revoke_access_token()
     except: pass
     return response
+
+
+async def telegraph_image_paste(filepath: str) -> str:
+	"""
+	paste the image in telegra.ph (graph.org) website. 
+	"""
+	telegraph = Telegraph(domain="graph.org")
+	try:
+		image_url = await telegraph.upload_file(filepath)
+		return "https://graph.org/" + image_url
+	except: return "something went wrong while posting image."
+	
