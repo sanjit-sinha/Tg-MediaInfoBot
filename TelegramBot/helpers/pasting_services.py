@@ -1,5 +1,5 @@
-from bs4 import BeautifulSoup
 from httpx import AsyncClient
+from bs4 import BeautifulSoup
 from telegraph.aio import Telegraph
 
 
