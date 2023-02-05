@@ -42,18 +42,17 @@ async def generate_spek(_, message: Message):
     if 'm4a' in mime.lower() or 'audio/mp4' in mime.lower():
         await async_subprocess(f"ffmpeg -i 'download/{file_name}' -f flac 'download/{file_name}.flac'")
         await async_subprocess(f"sox 'download/{file_name}.flac' -n remix 1 spectrogram -x 1000  -y 513 -z 120 -w Kaiser -o 'download/{file_name}.png'")
-        os.remove(f"download/{file_name}.flac")       
+        os.remove(f"download/{file_name}.flac")
+        
     else: await async_subprocess(f"sox 'download/{file_name}' -n remix 1 spectrogram -x 1000 -y 513 -z 120 -w Kaiser -o 'download/{file_name}.png'")   
                                                                                                         
     if not os.path.exists(f"download/{file_name}.png"):
         return await replymsg.edit("Can not able to generate spectograph of given audio.")
        
     image_url = await telegraph_image_paste(f"download/{file_name}.png")
-    await message.reply_text(image_url,  quote=True)
+    await message.reply_text(f"[{file_name}]({image_url})",  quote=True)
     
     await replymsg.delete()
     os.remove(f"download/{file_name}")
     os.remove(f"download/{file_name}.png")
     return 
-
-  
