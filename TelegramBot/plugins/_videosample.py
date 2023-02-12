@@ -255,3 +255,5 @@ async def video_sample(client: Client, message: Message):
     	info_dictionary[message.id]["url"] = url    	
     	return await message.reply_text("Choose time duration of sample video.", reply_markup=InlineKeyboardMarkup(sample_duration), quote=True)    	   	        	
     else: return await message.reply_text("This type of link is not supported.", quote=True)
+	
+	
