@@ -24,7 +24,6 @@ GOBACK_1_BUTTON = [[InlineKeyboardButton("🔙 Go Back", callback_data="START_BU
 
 
 @Client.on_callback_query(filters.regex("_BUTTON"))
-@ratelimiter
 async def botCallbacks(_, CallbackQuery):
     clicker_user_id = CallbackQuery.from_user.id
     user_id = CallbackQuery.message.reply_to_message.from_user.id
@@ -43,28 +42,14 @@ async def botCallbacks(_, CallbackQuery):
         
 
 @Client.on_message(filters.command(["start", "help"]))
-@ratelimiter
 async def start(_, message: Message):
     return await message.reply_text(
         START_CAPTION,
-        reply_markup=InlineKeyboardMarkup(START_BUTTON),
-        quote=True)
+        reply_markup=InlineKeyboardMarkup(START_BUTTON), quote=True)
        
-
-@Client.on_message(filters.command(["log", "logs"]) & dev_cmd)
-@ratelimiter
-async def log(client: Client, message: Message):
-    """
-    upload log file of the bot in telegram.
-    """
-    try:
-        await client.send_document(message.chat.id, "logs.txt", caption="logs.txt", reply_to_message_id=message.id)
-    except Exception as error:
-        await message.reply_text(f"{error}", quote=True)
        
 
 @Client.on_message(filters.command(["ping", "alive"]))
-@ratelimiter
 async def ping(_, message: Message):
     """
    Give ping speed of Telegram API along with Bot Uptime.
