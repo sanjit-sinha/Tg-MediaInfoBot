@@ -131,7 +131,7 @@ async def generate_ss_from_link(
 
 async def gdrive_screenshot(message, url, time, frame_count, fps, hdr, dv):
     """
-    Generates Screenshots From Google Drive links.
+    Generates Screenshots From Google Drive link.
     """
 
     replymsg = await message.reply_text("Checking your given gdrive link...", quote=True)
@@ -174,13 +174,13 @@ async def gdrive_screenshot(message, url, time, frame_count, fps, hdr, dv):
     except MessageNotModified: pass
     except Exception as error:
         await replymsg.edit(
-            f"Something went wrong while processing drive link. Make sure the gdrive link is public and not rate limited. ")
+            f"Something went wrong while processing gdrive link. Make sure that the gdrive link is public and not rate limited. ")
 
 
 
 async def ddl_screenshot(message, url, time, frame_count, fps, hdr, dv):
     """
-    Generates Screenshots from Direct Download links.
+    Generates Screenshots from Direct Download link.
     """
 
     replymsg = await message.reply_text(f"Checking direct download url....**", quote=True)
@@ -222,13 +222,13 @@ async def ddl_screenshot(message, url, time, frame_count, fps, hdr, dv):
     except MessageNotModified: pass
     except Exception as error:
         return await replymsg.edit(
-            f"Something went wrong! make sure that url is direct download video url.")
+            f"Something went wrong! make sure that the url is direct download video url.")
 
 
 
 async def telegram_screenshot(client, message, frame_count):
     """
-    Generates Screenshots from Telegram Video Files.
+    Generates Screenshots from Telegram Video File.
     """
 
     message = message.reply_to_message
@@ -278,6 +278,7 @@ async def telegram_screenshot(client, message, frame_count):
         file_duration=partial_file_duration)
      
 
+     
 screenshot_help ="""Generates screenshots from Google Drive links, Telegram files, or direct download links.
 
 **--➜ Command - --**
