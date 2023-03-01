@@ -1,4 +1,5 @@
 from TelegramBot.helpers.gdrivehelper import GoogleDriveHelper
+from TelegramBot.helpers.filters import check_auth
 from TelegramBot.helpers.functions import *
 
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -233,7 +234,7 @@ async def videosample_duration(client,  CallbackQuery):
 		
 	
 	
-@Client.on_message(filters.command(["sample", "trim"]))
+@Client.on_message(filters.command(["sample", "trim"]) & check_auth)
 async def video_sample(client: Client, message: Message):
     """
     Generates video sample from Google Drive links, Telegram files or direct download links.
