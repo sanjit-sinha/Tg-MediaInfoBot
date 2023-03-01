@@ -2,8 +2,6 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram import filters, Client
 
 from TelegramBot.helpers.functions import get_readable_time
-from TelegramBot.helpers.decorators import ratelimiter
-from TelegramBot.helpers.filters import dev_cmd 
 from TelegramBot.helpers.start_constants import *
 from TelegramBot import BotStartTime
 
