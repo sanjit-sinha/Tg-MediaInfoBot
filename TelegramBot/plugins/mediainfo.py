@@ -20,7 +20,7 @@ import re
 
 async def gdrive_mediainfo(message, url):
     """
-    Generates Mediainfo from a Google Drive file
+    Generates Mediainfo from a Google Drive file.
     """
 
     reply_msg = await message.reply_text("Generating Mediainfo, Please wait..", quote=True)
@@ -78,7 +78,7 @@ async def gdrive_mediainfo(message, url):
     except Exception as error:
         await reply_msg.delete()
         return await message.reply_text(
-            f"Something went wrong while processing Gdrive url.\n\n (Make sure that the given drive url is not rate limited, is public and not a folder)", quote=True)
+            f"Something went wrong while processing Gdrive link.\n\n (Make sure that the gdrive url is not rate limited, is public and not a folder)", quote=True)
 
 
     
@@ -218,14 +218,14 @@ async def telegram_mediainfo(client, message):
         
     except Exception as error:
         await reply_msg.delete()
-        await message.reply_text(f"Something went wrong while generating Mediainfo of replied Telegram file.", quote=True)
+        await message.reply_text(f"Something went wrong while generating Mediainfo from replied Telegram file.", quote=True)
 
 
 
 
 @Client.on_message(filters.command(["mediainfo", "m"]))
 async def mediainfo(client, message: Message):
-    mediainfo_usage = f"**Generates mediainfo from Google Drive Links, Telegram files or direct download links. Reply to any telegram file or just pass the link after the command."
+    mediainfo_usage = f"**Generates mediainfo from Google Drive Links, Telegram files or direct download links. \n\nReply to any telegram file or just pass the link after the command."
     
     if message.reply_to_message:
         return await telegram_mediainfo(client, message)
