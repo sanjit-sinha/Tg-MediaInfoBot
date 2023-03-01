@@ -240,7 +240,7 @@ def html_builder(title: str, text: str) -> str :
 
 def mediainfo_paste(text: str, title: str) -> str:
     """
-    paste html content into mediainfo.deta.dev
+    paste html content in mediainfo.deta.dev
     """
     
     html_content = html_builder(title, text)
