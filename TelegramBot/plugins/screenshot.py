@@ -252,7 +252,6 @@ async def telegram_screenshot(client, message, frame_count):
     	if message.media.value == "document" and "video" not in mime:
     	    return await replymsg.edit("can only generate screenshots from video file.", quote=True)
     	
-    	await replymsg.edit("Downloading partial file...") 
     	#limit of partial file to be downloaded for generating screenshots ( i.e, 150mb).
     	download_limit: int = 150*1024*1024
     	
