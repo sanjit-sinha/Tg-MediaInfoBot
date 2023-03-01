@@ -10,6 +10,7 @@
 <img src="https://img.shields.io/github/forks/sanjit-sinha/Tg-MediaInfoBot">
 <img src="https://img.shields.io/github/repo-size/sanjit-sinha/Tg-MediaInfoBot">
 <img src="https://img.shields.io/badge/License-MIT-green.svg">
+<img src="https://www.repostatus.org/badges/latest/active.svg">
 </p>
 
 ----
