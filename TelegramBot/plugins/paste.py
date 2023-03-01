@@ -14,7 +14,7 @@ paste_usage = f"**Usage:** paste the text to katb.in website. Reply to a text fi
 @ratelimiter
 async def paste(_, message: Message):
    """
-   Paste the text to katb.in website.
+   Paste the text in katb.in website.
    """
 
     replied_message = message.reply_to_message
