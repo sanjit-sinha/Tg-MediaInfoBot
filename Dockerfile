@@ -18,5 +18,4 @@ RUN pip3 install --no-cache-dir -r requirements.txt && \
 RUN locale-gen en_US.UTF-8
 
 COPY . .
-
 CMD ["python3" "-m" "TelegramBot"]
