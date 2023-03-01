@@ -215,7 +215,7 @@ sample_duration = [
     ]
 ]
 
-info_dictionary: dict = { }
+info_dictionary: dict = {}
 @Client.on_callback_query(filters.regex("videosample_"))
 async def videosample_duration(client,  CallbackQuery):
 	duration = int(CallbackQuery.data.split("_")[-1])
