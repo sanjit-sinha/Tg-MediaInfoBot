@@ -15,6 +15,7 @@ async def paste(_, message: Message):
     """
     
     paste_usage = f"**Usage:** paste the text to katb.in website. Reply to a text file, text message or just type the text after command.\n\n**Example:** /paste type your text"
+    
     paste_reply = await message.reply_text("pasting...", quote=True)
     replied_message = message.reply_to_message
     
@@ -33,10 +34,10 @@ async def paste(_, message: Message):
                 content = await file.read()
             os.remove("temp_file")
             
-        else: return await message.reply_text(paste_usage, quote=True)
+        else: return await paste_reply.edit(paste_usage)
         
     elif len(message.command) < 2:
-        return await message.reply_text(paste_usage, quote=True)
+        return await paste_reply.edit(paste_usage)
     
     output = await katbin_paste(content)
     return await paste_reply.edit(f"{output}", disable_web_page_preview=True)
