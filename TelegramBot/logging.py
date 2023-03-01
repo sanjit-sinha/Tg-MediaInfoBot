@@ -15,6 +15,7 @@ logging.basicConfig(
         logging.StreamHandler()])
 
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
+logging.getLogger('googleapicliet.discovery_cache').setLevel(logging.ERROR)
 
 def LOGGER(name: str) -> logging.Logger:
     return logging.getLogger(name)
