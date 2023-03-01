@@ -230,55 +230,60 @@ async def telegram_screenshot(client, message, frame_count):
     """
     Generates Screenshots from Telegram Video File.
     """
-
-    message = message.reply_to_message
-    if message.text:
-        return await message.reply_text("Reply to a proper video file to Generate Screenshots.", quote=True)
-
-    elif message.media.value == "video":
-        media = message.video
-        
-    elif message.media.value == "document":
-        media = message.document
-
-    else: return await message.reply_text("can only generate screenshots from video file....", quote=True)
-
-    file_name = str(media.file_name)
-    mime = media.mime_type
-    file_size = media.file_size
-    if message.media.value == "document" and "video" not in mime:
-        return await message.reply_text("can only generate screenshots from video file. Please wait....", quote=True)
-
-    replymsg = await message.reply_text(f"Downloading partial video file ....", quote=True)
     
-    #limit of partial file to be downloaded for generating screenshots ( i.e, 150mb).
-    download_limit: int = 150*1024*1024
-     
-    async for chunk in client.stream_media(message, limit=150):
-        with open(f"download/{file_name}", "ab") as file:
-        	file.write(chunk)
-        
-    #percentage of file that got downloaded.
-    await replymsg.edit("Partial file downloaded ....")
-    
-    if file_size < download_limit:
-    	downloaded_percentage = 100
-    else: downloaded_percentage =  (download_limit/file_size) * 100
-     
-    mediainfo_json = await async_subprocess(f"mediainfo 'download/{file_name}' --Output=JSON")
-    mediainfo_json = json.loads(mediainfo_json)
-    total_duration = mediainfo_json["media"]["track"][0]["Duration"]
-    
-    partial_file_duration = float(total_duration) if downloaded_percentage == 100 else (downloaded_percentage * float(total_duration)) / 100
-    await generate_ss_from_file(
-        message,
-        replymsg,
-        file_name,
-        frame_count,
-        file_duration=partial_file_duration)
-     
+    replymsg = await message.reply_text(f"Generating screenshots from Telegram file, please wait...", quote=True)
+    try:
+    	message = message.reply_to_message
+    	if message.text:
+    		return await replymsg.edit("Reply to a proper video file to generate screenshots.")
+    	
+    	elif message.media.value == "video":
+    	    media = message.video
+    	    
+    	elif message.media.value == "document":
+    		media = message.document
+    	
+    	else: return await replymsg.edit("can only generate screenshots from video file....")
+    	
+    	file_name = str(media.file_name)
+    	mime = media.mime_type
+    	file_size = media.file_size
+    	
+    	if message.media.value == "document" and "video" not in mime:
+    	    return await replymsg.edit("can only generate screenshots from video file.", quote=True)
+    	
+    	await replymsg.edit("Downloading partial file...") 
+    	#limit of partial file to be downloaded for generating screenshots ( i.e, 150mb).
+    	download_limit: int = 150*1024*1024
+    	
+    	async for chunk in client.stream_media(message, limit=150):
+    	    with open(f"download/{file_name}", "ab") as file: file.write(chunk)
+    	
+    	#percentage of file that got downloaded.
+    	await replymsg.edit("Partial file downloaded...")
+    	
+    	if file_size < download_limit: downloaded_percentage = 100
+    	else: downloaded_percentage =  (download_limit/file_size) * 100
+    	
+    	mediainfo_json = await async_subprocess(f"mediainfo 'download/{file_name}' --Output=JSON")
+    	mediainfo_json = json.loads(mediainfo_json)
+    	total_duration = mediainfo_json["media"]["track"][0]["Duration"]
+    	
+    	partial_file_duration = float(total_duration) if downloaded_percentage == 100 else (downloaded_percentage * float(total_duration)) / 100
+    	
+    	await generate_ss_from_file(
+    	    message,
+    	    replymsg,
+    	    file_name,
+    	    frame_count,
+    	    file_duration=partial_file_duration)       
+                                            
+    except MessageNotModified: pass
+    except Exception as error:
+        await replymsg.edit(f"Something went wrong while generating screenshots from Telegram file.")
 
-     
+   
+       
 screenshot_help ="""Generates screenshots from Google Drive links, Telegram files, or direct download links.
 
 **--➜ Command - --**
@@ -288,7 +293,7 @@ screenshot_help ="""Generates screenshots from Google Drive links, Telegram file
 **--➜ Additional Flags - --**
 
 `--count=10`  __[Number of screenshots. Default 10, Max 20]__
-`--fps=10`  __[Difference between two consecutive screenshots in seconds. Default 5, Max 10]__
+`--fps=10`  __[Difference between two consecutive screenshots in seconds. Default 5, Max 15]__
 `--time=01:20:10`  __[Time from where the screenshots should be taken in HH:MM:SS format]__
 `--hdr`  __[For HDR Videos]__
 
@@ -316,10 +321,9 @@ async def screenshot(client: Client, message: Message):
     	return await message.reply_text(screenshot_help, quote=True)
   
     user_input = message.text.split(None, 1)[1]
-    
     match = re.search(r"(-|--)fps=(\d+)", user_input)
-    fps = int(match[2]) if match and match[2].isdigit() else 10
-    fps = min(fps, 20)
+    fps = int(match[2]) if match and match[2].isdigit() else 5
+    fps = min(fps, 15)
     
     match = re.search(r"(-|--)count=(\d+)", user_input)
     frame_count = int(match[2]) if match and match[2].isdigit() else 10
