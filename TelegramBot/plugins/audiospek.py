@@ -4,13 +4,12 @@ import subprocess
 from pyrogram.types import Message
 from pyrogram import filters, Client
 
-from TelegramBot.helpers.decorators import ratelimiter
+from TelegramBot.helpers.filters import check_auth
 from TelegramBot.helpers.functions import async_subprocess 
 from TelegramBot.helpers.pasting_services import telegraph_image_paste 
 
 
-@Client.on_message(filters.command(["spek", "sox"]))
-@ratelimiter
+@Client.on_message(filters.command(["spek", "sox"]) & check_auth)
 async def generate_spek(_, message: Message):
     """Generate spectrograph of music file using sox tool."""
 
