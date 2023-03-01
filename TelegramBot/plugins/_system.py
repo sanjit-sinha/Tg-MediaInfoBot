@@ -6,7 +6,7 @@ from TelegramBot.logging import LOGGER
 from TelegramBot.helpers.filters import sudo_cmd
 
 
-@Client.on_message(filters.command("update") & sudo_cmd)
+@Client.on_message(filters.command(["update", "gitpull"]) & sudo_cmd)
 async def update(_, message: Message):
     """
     Update the bot with the latest commit changes from GitHub.
@@ -19,3 +19,12 @@ async def update(_, message: Message):
     os.execl(sys.executable, sys.executable, "-m", "TelegramBot")
 
 
+@Client.on_message(filters.command(["log", "logs"]) & sudo_cmd)
+async def log(client: Client, message: Message):
+    """
+    upload log file of the bot in telegram.
+    """
+    try:
+        await client.send_document(message.chat.id, "logs.txt", caption="logs.txt", reply_to_message_id=message.id)
+    except Exception as error:
+        await message.reply_text(f"{error}", quote=True)
