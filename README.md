@@ -6,7 +6,7 @@
 </div>
 
 <p align="center">
-< a href="https://img.shields.io/github/stars/sanjit-sinha/Tg-MediaInfoBot"></a>
+<img src="https://img.shields.io/github/stars/sanjit-sinha/Tg-MediaInfoBot">
 < a href="https://img.shields.io/github/forks/sanjit-sinha/Tg-MediaInfoBot"></a>
 < a href="https://img.shields.io/github/repo-size/sanjit-sinha/Tg-MediaInfoBot"></a>
 < a href="https://img.shields.io/badge/License-MIT-green.svg"></a>
