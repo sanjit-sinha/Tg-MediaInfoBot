@@ -60,7 +60,7 @@ async def generate_videosample_from_link(
 
 async def gdrive_videosample(message, url, duration):
     """
-    Generate video sample From Google Drive link.
+    Generates video sample From Google Drive link.
     """
 
     replymsg = await message.reply_text("Checking your Gdrive link...", quote=True)
@@ -98,12 +98,12 @@ async def gdrive_videosample(message, url, duration):
     except MessageNotModified: pass
     except Exception as error:
         await replymsg.edit(
-            f"Something went wrong while processing Gdrive link. Make sure link is public and is a proper video file.{error}")
+            f"Something went wrong while processing Gdrive link. Make sure that the link is public and is a proper video file.")
 
 
 async def ddl_videosample(message, url,  duration):
     """
-    Generate video sample from ddl.
+    Generates video sample from ddl.
     """
 
     replymsg = await message.reply_text(f"Checking direct download url....**", quote=True)
@@ -165,9 +165,9 @@ async def telegram_videosample(message, client, duration):
     	file_size = media.file_size
     	
     	if message.media.value == "document" and "video" not in mime:
-    		return await message.reply_text("Can only generate sample from a video file. Please wait....", quote=True)
+    		return await message.reply_text("Can only generate sample from a video file. Please wait...", quote=True)
     		
-    	replymsg = await message.reply_text(f"Generating {duration} min video sample from `{unquote(filename)}`, please wait ...", quote=True)
+    	replymsg = await message.reply_text(f"Generating {duration} min video sample from `{unquote(filename)}`, please wait...", quote=True)
     	
     	rand_str = randstr()
     	download_path = f"download/{rand_str}_{filename}"
