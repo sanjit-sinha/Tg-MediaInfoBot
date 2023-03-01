@@ -1,7 +1,11 @@
 import os
+import shlex
 import string
 import shutil
 import random
+import asyncio 
+import subprocess 
+from typing import Union
 
 
 def get_readable_time(seconds: int) -> str:
@@ -30,41 +34,30 @@ def get_readable_time(seconds: int) -> str:
     result += f"{seconds}s "
     return result
 
-def get_readable_bytes(size: str) -> str:
+
+def get_readable_bytes(size: Union[int, str]) -> str:
     """
     Return a human readable file size from bytes.
     """
 
-    dict_power_n = {0: "", 1: "Ki", 2: "Mi", 3: "Gi", 4: "Ti"}
+    UNIT_SUFFIXES = ['B', 'KiB', 'MiB', 'GiB', 'TiB']
 
-    if not size:
-        return ""
-    power = 2**10
-    raised_to_pow = 0
+    if isinstance(size, str):
+        size = int(size)
 
-    while size > power:
-        size /= power
-        raised_to_pow += 1
+    if size < 0:
+        raise ValueError('Size must be positive')
+    if size == 0:
+        return '0 B'
 
-    return f"{str(round(size, 2))} 
+    i = 0
+    while size >= 1024 and i < len(UNIT_SUFFIXES) - 1:
+        size /= 1024
+        i += 1
 
-def get_readable_bytes(value, digits=2, delim="", postfix=""):
-    """
-    Return a human-readable file size.
-    """
-
-    if value is None:
-        return None
-    chosen_unit = "B"
-    for unit in ("KiB", "MiB", "GiB", "TiB"):
-        if value > 1000:
-            value /= 1024
-            chosen_unit = unit
-        else:
-            break
-    return f"{value:.{digits}f}" + delim + chosen_unit + postfix
-
-
+    return f"{size:.2f} {UNIT_SUFFIXES[i]}"
+      
+    
 def get_readable_bitrate(bitrate_kbps):
     """
     Return a human-readable bitrate size.
@@ -78,21 +71,71 @@ def get_readable_bitrate(bitrate_kbps):
     return bitrate
 
 
-def makedir(name: str):
-    if os.path.exists(name):
-        shutil.rmtree(name)
-    os.mkdir(name)
-
-
 def remove_N(seq):
+    """
+    Remove consecutive duplicates from the input sequence.
+    """
+    
     i = 1
     while i < len(seq):
         if seq[i] == seq[i - 1]:
-            del seq[i]
+            seq.pop(i)
             i -= 1
-        else:
-            i += 1
+        i += 1
 
 
-def randstr():
-    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=7))
+def makedir(name: str):
+    """
+    Create a directory with the specified name.
+    If a directory with the same name already exists, it will be removed and a new one will be created.
+    """
+    
+    if os.path.exists(name): shutil.rmtree(name)
+    os.mkdir(name)
+
+
+def check_and_convert_time(time: str):
+    """
+    Return the time in seconds if the time format is correct (i.e, HH:MM:SS).
+    Return False otherwise.
+    """
+    
+    try:
+        time = str(time)
+        hours, minutes, seconds = map(int, time.split(':'))
+        if 0 <= hours <= 23 and 0 <= minutes <= 59 and 0 <= seconds <= 59:
+            return int(3600 * hours + 60 * minutes + seconds)
+        else: return False
+    except ValueError: return False
+    
+
+def randstr(length=7):
+    """
+    Generate a random string of lowercase letters and digits with the specified length.
+    The default length is 7.
+    """
+    
+    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=length))
+
+
+async def async_subprocess(command: str) -> str:
+    """
+    Asynchronously run a shell command and return its output as a string.
+
+    Args:
+    	command (str): The command to run in the shell.
+
+    Returns:
+    	str: The output of the shell command, including stdout and stderr.
+
+    """
+    
+    args = shlex.split(command)
+    process = await asyncio.create_subprocess_exec(*args,
+                 stdout=asyncio.subprocess.PIPE,
+                 stderr=asyncio.subprocess.PIPE)
+                 
+    stdout, stderr = await process.communicate()
+    return str(stdout.decode().strip()) + str(stderr.decode().strip())
+
+
