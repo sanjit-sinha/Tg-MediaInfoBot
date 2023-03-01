@@ -1,6 +1,6 @@
 from TelegramBot.helpers.gdrivehelper import GoogleDriveHelper
-from TelegramBot.helpers.pasting_services import katbin_paste, telegraph_paste 
 from TelegramBot.helpers.mediainfo_paste import mediainfo_paste
+from TelegramBot.helpers.filters import check_auth
 from TelegramBot.helpers.functions import *
 
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
@@ -223,7 +223,7 @@ async def telegram_mediainfo(client, message):
 
 
 
-@Client.on_message(filters.command(["mediainfo", "m"]))
+@Client.on_message(filters.command(["mediainfo", "m"]) & check_auth)
 async def mediainfo(client, message: Message):
     mediainfo_usage = f"**Generates mediainfo from Google Drive Links, Telegram files or direct download links. \n\nReply to any telegram file or just pass the link after the command."
     
