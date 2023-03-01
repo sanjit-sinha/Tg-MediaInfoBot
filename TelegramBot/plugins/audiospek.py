@@ -11,7 +11,7 @@ from TelegramBot.helpers.pasting_services import telegraph_image_paste
 
 @Client.on_message(filters.command(["spek", "sox"]) & check_auth)
 async def generate_spek(_, message: Message):
-    """Generate spectrograph of music file using sox tool."""
+    """Generate spectrogram of music file using sox tool."""
 
     if not message.reply_to_message:
         return await message.reply_text("Reply to a proper audio file to Generate audio spectrum.", quote=True)
