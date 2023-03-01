@@ -87,7 +87,7 @@ async def ddl_mediainfo(message, url):
     Generates Mediainfo from a Direct Download Link.
     """
 
-    reply_msg = await message.reply_text("Generating Mediainfo, Please wait..", quote=True)
+    reply_msg = await message.reply_text("Generating Mediainfo, Please wait...", quote=True)
     try:
         filename = re.search(".+/(.+)", url).group(1)
         if len(filename) > 60:
