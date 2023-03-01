@@ -188,7 +188,7 @@ import re
 
 def html_builder(title: str, text: str) -> str :
     """
-    Make proper html with css values from given content.
+    Make proper html with css from given content.
     """
     
     heading = "<span class='container heading'><b>{content}</b></span>"
