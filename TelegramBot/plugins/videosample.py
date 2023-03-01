@@ -20,7 +20,7 @@ import re
 
 
 #thumbnail of the video file.
-thumb_path = f"download/thumb.jpg"
+thumb_path = f"thumb.jpg"
 thumb = requests.get("https://te.legra.ph/file/508f1cd599bb3d9352e88.jpg", allow_redirects=True)
 open(thumb_path, "wb").write(thumb.content)
                                                            
