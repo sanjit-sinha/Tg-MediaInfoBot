@@ -1,6 +1,6 @@
 from pyrogram import filters
 from pyrogram.types import Message
-from TelegramBot.config import SUDO_USERID
+from TelegramBot.config import SUDO_USERID, AUTHORIZED_CHATS 
 
 
 def authorized(_, __, message: Message) -> bool:
