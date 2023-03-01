@@ -1,19 +1,12 @@
-FROM ubuntu:22.04
-
-ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 LANGUAGE=en_US:en TZ=Asia/Kolkata
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    wget ffmpeg libsox-fmt-mp3 mediainfo megatools python3-pip locales && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-RUN locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
-
-WORKDIR /usr/src/app
-
-COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt
-
+FROM ubuntu:20.04
 COPY . .
-
-CMD ["python3", "-m", "TelegramBot"]
-
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update -y
+RUN apt-get upgrade -y
+RUN apt-get -y install wget ffmpeg
+RUN wget https://mediaarea.net/repo/deb/repo-mediaarea_1.0-20_all.deb
+RUN dpkg -i repo-mediaarea_1.0-20_all.deb
+RUN apt-get update -y
+RUN apt-get -y install mediainfo megatools python3-pip sox
+RUN pip install --upgrade bs4 lxml google-api-python-client google-auth-httplib2 google-auth-oauthlib pycryptodomex pillow pyrogram tgcrypto pycryptodomex python-dotenv m3u8
+RUN chmod +x start.sh
