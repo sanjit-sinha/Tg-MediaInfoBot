@@ -5,12 +5,11 @@
 <h2 align="center">Telegram MediaInfoBot</h2>
 </div>
 
-<div align="center">
 ![](https://img.shields.io/github/stars/sanjit-sinha/Tg-MediaInfoBot)
 ![](https://img.shields.io/github/forks/sanjit-sinha/Tg-MediaInfoBot)
 ![](https://img.shields.io/github/repo-size/sanjit-sinha/Tg-MediaInfoBot)
 ![](https://img.shields.io/badge/License-MIT-green.svg)
-</div>
+
 
 ----
 
