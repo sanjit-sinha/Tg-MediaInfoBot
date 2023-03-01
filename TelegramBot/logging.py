@@ -2,12 +2,6 @@ from logging.handlers import RotatingFileHandler
 import logging
 import os
 
-# removing old logs file if they exist.
-try:
-    os.remove("logs.txt")
-except:
-    pass
-
 logging.basicConfig(
     level=logging.INFO,
     format="[%(asctime)s - %(levelname)s] - %(name)s - %(message)s",
