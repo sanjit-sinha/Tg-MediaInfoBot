@@ -7,6 +7,7 @@ from asyncio import get_event_loop, new_event_loop, set_event_loop
 import uvloop 
 import requests
 
+from pyrogram import Client
 from TelegramBot.config import *
 from TelegramBot.logging import LOGGER
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
