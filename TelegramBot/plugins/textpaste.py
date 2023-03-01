@@ -4,12 +4,11 @@ import aiofiles
 from pyrogram.types import Message
 from pyrogram import Client, filters
 
-from TelegramBot.helpers.decorators import ratelimiter
+from TelegramBot.helpers.filters import check_auth
 from TelegramBot.helpers.pasting_services import katbin_paste
 
 
-@Client.on_message(filters.command(["paste"]))
-@ratelimiter
+@Client.on_message(filters.command(["paste"]) & check_auth)
 async def paste(_, message: Message):
     """
     Paste the text in katb.in website.
