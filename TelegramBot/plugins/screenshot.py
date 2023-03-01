@@ -1,4 +1,5 @@
 from TelegramBot.helpers.gdrivehelper import GoogleDriveHelper
+from TelegramBot.helpers.filters import check_auth
 from TelegramBot.helpers.functions import *
 
 from pyrogram.errors import MessageNotModified
@@ -301,7 +302,7 @@ screenshot_help ="""Generates screenshots from Google Drive links, Telegram file
 `/ss https://videolink.mkv --count=10 --fps=1 --hdr --time=00:20:00`"""
 
 
-@Client.on_message(filters.command(["screenshot", "ss"]))
+@Client.on_message(filters.command(["screenshot", "ss"])& check_auth)
 async def screenshot(client: Client, message: Message):
     """
     Generates Screenshots from ddl, gdrive or Telegram files.
