@@ -1,22 +1,19 @@
-from TelegramBot.helpers.gdrivehelper import GoogleDriveHelper
-from TelegramBot.helpers.filters import check_auth
-from TelegramBot.helpers.functions import *
-
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from pyrogram.errors import MessageNotModified
-from pyrogram import Client, filters
-from pyrogram.types import Message
-
-from urllib.parse import unquote
-import subprocess
-import datetime
-import requests
 import asyncio
+import datetime
 import httpx
-import shlex 
-import time
 import json
 import re
+import subprocess
+import time
+from urllib.parse import unquote
+
+from pyrogram import Client, filters
+from pyrogram.errors import MessageNotModified
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+
+from TelegramBot.helpers.filters import check_auth
+from TelegramBot.helpers.functions import *
+from TelegramBot.helpers.gdrivehelper import GoogleDriveHelper
 
 
 #thumbnail of the video file.
