@@ -244,7 +244,7 @@ def mediainfo_paste(text: str, title: str) -> str:
     """
     
     html_content = html_builder(title, text)
-    URL = "https://mediainfo.deta.dev/api"
+    URL = "https://mediainfo-1-y5870653.deta.app/sanjit/api"
     response = requests.post(URL, json={"content": html_content})
     if response.status_code == 200:
     	return f"https://mediainfo.deta.dev/{json.loads(response.content)['key']}"
