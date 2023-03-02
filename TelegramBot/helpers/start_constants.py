@@ -7,9 +7,9 @@ COMMAND_TEXT = """🗒️ Documentation for commands available to user's
 
 • /alive: To check if bot is alive or not.
 
-• /paste: paste text to katb.in website.
+• /paste: paste text in katb.in website.
 
-• /screenshot or /ss: Generate Screenshot from video file
+• /screenshot or /ss: Generates Screenshot from video file
 
 • /mediainfo or /m: Generates Mediainfo of file. 
 
