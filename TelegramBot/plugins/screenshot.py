@@ -18,7 +18,6 @@ from pyrogram.errors import MessageNotModified
 from TelegramBot.helpers.functions import *
 from TelegramBot.helpers.filters import check_auth
 from TelegramBot.helpers.gdrivehelper import GoogleDriveHelper
-
  
   
 async def slowpics_collection(message, file_name, path):
