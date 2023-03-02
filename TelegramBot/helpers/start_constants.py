@@ -1,4 +1,4 @@
-from TelegramBot.version import (__python_version__, __version__, __pyro_version__,  __license__)
+from TelegramBot.version import (__python_version__, __version__, __pyro_version__)
 
 
 COMMAND_TEXT = """🗒️ Documentation for commands available to user's 
@@ -9,22 +9,19 @@ COMMAND_TEXT = """🗒️ Documentation for commands available to user's
 
 • /paste: paste text to katb.in website.
 
-(Generates frames screenshot from video  file.)
+• /screenshot or /ss: Generate Screenshot from video file
 
-• /screenshot or /ss [File DDL/Drive URL] | [No. of frames] ( Default 5 and Max 15)
+• /mediainfo or /m: Generates Mediainfo of file. 
 
-(Generates Mediainfo  from any type file. )
+• /sample or /trim: Generates Video sample file from a video.
 
-• /mediainfo or /m  [File DDL/Drive URL]
+• /spek or /sox: Generates audio Spectogram from Telegram audio files.
 
-You can also reply Mediainfo and Screenshot commands to telegram files aswell.
 """
-
 
 ABOUT_CAPTION = f"""• Python version : {__python_version__}
 • Bot version : {__version__}
 • pyrogram  version : {__pyro_version__}
-• License : {__license__}
 
 **Github Repo**: https://github.com/sanjit-sinha/Tg-MediaInfoBot"""
 
