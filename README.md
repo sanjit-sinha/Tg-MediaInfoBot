@@ -64,6 +64,7 @@ ____
  
  <h2 align="center"> Bot Deployment </h2>
  
+ ffmpeg ans stuff
  ```
 git clone https://github.com/sanjit-sinha/Tg-MediaInfoBot
 cd Tg-MediaInfoBot
