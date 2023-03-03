@@ -23,7 +23,7 @@ async def gdrive_mediainfo(message, url):
     Generates Mediainfo from a Google Drive file.
     """
 
-    reply_msg = await message.reply_text("Generating Mediainfo, Please wait..", quote=True)
+    reply_msg = await message.reply_text("Generating Mediainfo, Please wait...", quote=True)
     try:
         GD = GoogleDriveHelper()
         metadata = GD.get_metadata(url)
@@ -78,7 +78,7 @@ async def gdrive_mediainfo(message, url):
     except Exception as error:
         await reply_msg.delete()
         return await message.reply_text(
-            f"Something went wrong while processing Gdrive link.\n\n (Make sure that the gdrive url is not rate limited, is public and not a folder)", quote=True)
+            f"Something went wrong while processing Gdrive link.\n\n (Make sure that the gdrive link is not rate limited, is public link and not a folder)", quote=True)
 
 
     
@@ -145,7 +145,7 @@ async def telegram_mediainfo(client, message):
     Generates Mediainfo from a Telegram File.
     """
 
-    reply_msg = await message.reply_text("Generating Mediainfo, Please wait..", quote=True)
+    reply_msg = await message.reply_text("Generating Mediainfo, Please wait...", quote=True)
     try:
     	message = message.reply_to_message
     	if message.text:
