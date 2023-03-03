@@ -64,17 +64,18 @@ ____
  
 <h2 align="center"> Bot Deployment </h2>
  
-<b> Install Dependencies </b>
+<b> Install and update Dependencies 
 
-```
+sh```
 sudo apt-get update && sudo apt-get upgrade -y
 sudo apt-get install -y python3-pip
 sudo pip3 install -U pip
 sudo apt-get install -y --no-install-recommends mediainfo ffmpeg
 sudo apt-get install libsox-fmt-mp3
 ```
+clone the repository and install the requirements
 
-```
+sh```
 git clone https://github.com/sanjit-sinha/Tg-MediaInfoBot
 cd Tg-MediaInfoBot
 pip3 install -U -r requirements.txt
@@ -117,6 +118,14 @@ python3 token_generator.py
 </details>
 
 Now you can start the bot by simply typing `bash start` or `python3 -m TelegramBot`
+
+> **If you wanna run this bot 24/7 on the VPS, follow thesesteps.**
+> ```sh
+> sudo apt install tmux -y
+> tmux
+> python3 -m WebStreamer
+> ```
+> now you can close the VPS and the bot will run on it.
 
 The bot will stop working once you logout from the server. You can run the bot 24*7 in the server by using tmux.
 ```
