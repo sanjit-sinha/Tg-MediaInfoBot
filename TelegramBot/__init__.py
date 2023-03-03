@@ -66,14 +66,16 @@ except RuntimeError:
 async def clear_download():
   """Clear download directory after every 24 hour."""
   
-  shutil.rmtree(name)
-  os.mkdir(name)
+  shutil.rmtree("download")
+  os.mkdir("download")
 
 
 scheduler = AsyncIOScheduler()
 scheduler.add_job(clear_download, "interval", minutes=1440)
 scheduler.start()
 
+#creating download directory 
+os.mkdir("download")
 
 LOGGER(__name__).info("initiating the client....")
 plugins = dict(root="TelegramBot/plugins")
