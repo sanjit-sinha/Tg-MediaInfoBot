@@ -1,25 +1,25 @@
-import subprocess
-import datetime
-import requests
-import asyncio
+import re
+import json
 import time
 import shlex
-import json
-import re
+import httpx
+import asyncio
+import requests
+import datetime
+import subprocess
 
-from TelegramBot.helpers.supported_url_regex import SUPPORTED_URL_REGEX
-from TelegramBot.helpers.gdrivehelper import GoogleDriveHelper
-from TelegramBot.helpers.functions import *
-from TelegramBot.config import prefixes
-
-from pyrogram.errors import MessageNotModified
-from pyrogram import Client, filters
-from pyrogram.types import Message
-
-from requests_toolbelt import MultipartEncoder
 from urllib.parse import unquote
+from requests_toolbelt import MultipartEncoder
 
+from pyrogram.types import Message
+from pyrogram import Client, filters
+from pyrogram.errors import MessageNotModified
 
+from TelegramBot.helpers.functions import *
+from TelegramBot.helpers.filters import check_auth
+from TelegramBot.helpers.gdrivehelper import GoogleDriveHelper
+ 
+  
 async def slowpics_collection(message, file_name, path):
     """
     Uploads image(s) to https://slow.pics/ from a specified directory.
@@ -28,20 +28,20 @@ async def slowpics_collection(message, file_name, path):
     msg = await message.reply_text("uploading generated screenshots to slow.pics.", quote=True)
 
     img_list = os.listdir(path)
+    img_list = sorted(img_list)
+    
     data = {
         "collectionName": f"{unquote(file_name)}",
         "hentai": "false",
         "optimizeImages": "false",
-        "public": "false",
-    }
+        "public": "false"}
 
     for i in range(0, len(img_list)):
-        data[f"images[{i}].name"] = img_list[i]
+        data[f"images[{i}].name"] = img_list[i].split(".")[0]
         data[f"images[{i}].file"] = (
             img_list[i],
             open(f"{path}/{img_list[i]}", "rb"),
-            "image/png",
-        )
+            "image/png")
 
     with requests.Session() as client:
         client.get("https://slow.pics/api/collection")
@@ -49,15 +49,10 @@ async def slowpics_collection(message, file_name, path):
         length = str(files.len)
 
         headers = {
-            "Accept": "*/*",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Accept-Language": "en-US,en;q=0.5",
             "Content-Length": length,
             "Content-Type": files.content_type,
             "Origin": "https://slow.pics/",
             "Referer": "https://slow.pics/collection",
-            "Sec-Fetch-Mode": "cors",
-            "Sec-Fetch-Site": "same-origin",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36",
             "X-XSRF-TOKEN": client.cookies.get_dict()["XSRF-TOKEN"]}
 
@@ -65,8 +60,9 @@ async def slowpics_collection(message, file_name, path):
         await msg.edit(
             f"File Name: `{unquote(file_name)}`\n\nFrames: https://slow.pics/c/{response.text}",
             disable_web_page_preview=True)
-
-
+ 
+            
+                                  
 async def generate_ss_from_file(
         message,
         replymsg,
@@ -81,34 +77,28 @@ async def generate_ss_from_file(
     await replymsg.edit(f"Generating **{frame_count}** screnshots from `{unquote(file_name)}`, please wait...")
 
     rand_str = randstr()
-    makedir(f"screenshot_{rand_str}")
-
+    download_path = f"download/{rand_str}"
+    makedir(download_path)
+   
     loop_count = frame_count
     while loop_count != 0:
 
         random_timestamp = random.uniform(1, file_duration)
-        timestamp = str(datetime.timedelta(seconds=int(random_timestamp)))
-        outputpath = f"screenshot_{rand_str}/{(frame_count - loop_count) + 1}.png"
+        timestamp = str(datetime.timedelta(seconds=int(random_timestamp))) 
+        outputpath = f"{download_path}/{str((frame_count - loop_count) + 1).zfill(2)}.png"
 
-        ffmpeg_command = f"ffmpeg -y -ss {timestamp} -i '{file_name}' -vframes 1 {outputpath}"
-        args = shlex.split(ffmpeg_command)
-
-        shell = await asyncio.create_subprocess_exec(*args, stdout=asyncio.subprocess.PIPE,
-                                                     stderr=asyncio.subprocess.PIPE)
-
-        stdout, stderr = await shell.communicate()
-        result = str(stdout.decode().strip()) + str(stderr.decode().strip())
-
-        if "File ended prematurely" in result:
-            loop_count += 1
+        ffmpeg_command = f"ffmpeg -y -ss {timestamp} -i 'download/{file_name}' -vframes 1 {outputpath}"        
+        result = await async_subprocess(ffmpeg_command)
+        if "File ended prematurely" in result:  loop_count += 1
         loop_count -= 1
 
     await replymsg.delete()
-    await slowpics_collection(message, file_name, path=f"{os.getcwd()}/screenshot_{rand_str}")
+    await slowpics_collection(message, file_name, path=f"{os.getcwd()}/{download_path}")
 
-    shutil.rmtree(f"screenshot_{rand_str}")
-    os.remove(file_name)
-
+    shutil.rmtree(download_path)
+    os.remove(f"download/{file_name}")
+   
+                             
 
 async def generate_ss_from_link(
         message,
@@ -117,62 +107,61 @@ async def generate_ss_from_link(
         headers,
         file_name,
         frame_count,
-        file_duration
+        fps, hdr, 
+        timestamp, 
 ):
     """
     Generates screenshots from direct download links using ffmpeg.
     """
 
-    await replymsg.edit(f"Generating **{frame_count}** screnshots from `{unquote(file_name)}`, please wait...")
-
+    await replymsg.edit(f"Generating **{frame_count}** screnshots from `{unquote(file_name)}`, please wait ...")
     rand_str = randstr()
-    makedir(f"screenshot_{rand_str}")
-
-    loop_count = frame_count
-    while loop_count != 0:
-        random_timestamp = random.uniform(1, file_duration)
-        timestamp = str(datetime.timedelta(seconds=int(random_timestamp)))
-        outputpath = f"screenshot_{rand_str}/{(frame_count - loop_count) + 1}.png"
-
-        ffmpeg_command = f"ffmpeg -headers '{headers}' -y -ss {timestamp} -i {file_url} -vframes 1 {outputpath}"
-        args = shlex.split(ffmpeg_command)
-
-        shell = await asyncio.create_subprocess_exec(*args, stdout=asyncio.subprocess.PIPE,
-                                                     stderr=asyncio.subprocess.PIPE)
-
-        _, __ = await shell.communicate()
-        loop_count -= 1
-        time.sleep(3)
+    download_path = f"download/{rand_str}"
+    makedir(download_path)
+   
+    vf_flags = f"zscale=transfer=linear,tonemap=tonemap=hable:param=1.0:desat=0:peak=10,zscale=transfer=bt709,format=yuv420p,fps=1/{fps}" if hdr else f"fps=1/{fps}"
+        
+    ffmpeg_command = f"ffmpeg -headers '{headers}' -y -ss {timestamp} -i {file_url} -vf '{vf_flags}' -vframes {frame_count} {download_path}/%02d.png" 
+    shell_output = await async_subprocess(ffmpeg_command)
 
     await replymsg.delete()
-    await slowpics_collection(message, file_name, path=f"{os.getcwd()}/screenshot_{rand_str}")
+    await slowpics_collection(message, file_name, path=f"{os.getcwd()}/{download_path}")
+    shutil.rmtree(download_path)
 
-    shutil.rmtree(f"screenshot_{rand_str}")
 
 
-async def gdrive_screenshot(message, frame_count, url):
+async def gdrive_screenshot(message, url, time, frame_count, fps, hdr, dv):
     """
-    Generates Screenshots From Google Drive links.
+    Generates Screenshots From Google Drive link.
     """
 
-    replymsg = await message.reply_text(f"Checking your given Gdrive Link...", quote=True)
-
+    replymsg = await message.reply_text("Checking your given gdrive link...", quote=True)
     try:
-        GD = GoogleDriveHelper()
-        metadata = GD.get_metadata(url)
+        drive = GoogleDriveHelper()
+        metadata = drive.get_metadata(url)
         file_name = metadata["name"]
 
         if "video" not in metadata["mimeType"]:
-            return await replymsg.edit("can only generate screenshots from video file.**")
+            return await replymsg.edit("Can only generate screenshots from video file.**")
 
-        file_url = GD.get_ddl_link(url)
-        bearer_token = GD.get_bearer_token()
+        file_url = drive.get_ddl_link(url)
+        bearer_token = drive.get_bearer_token()
         headers = f"Authorization: Bearer {bearer_token}"
 
-        total_duration = subprocess.check_output(
-            f"ffprobe -headers '{headers}' -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 {file_url}",
-            shell=True).decode("utf-8")
-        total_duration = float(total_duration.strip())
+        total_duration = await async_subprocess(
+            f"ffprobe -headers '{headers}' -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 {file_url}")
+        total_duration = float(total_duration.strip())                    
+        
+        #Generate a random timestamp between first 15-20% of the movie. 
+        timestamp = total_duration * (random.uniform(15, 20) / 100)                                       
+        
+        #check if manual timestamp is valid or not.
+        custom_timestamp = check_and_convert_time(time)
+        if custom_timestamp:       
+         	timestamp = custom_timestamp if custom_timestamp < total_duration else timestamp
+         	
+        #convering final timestamp into HH:MM:SS format
+        timestamp = str(datetime.timedelta(seconds=int(timestamp))) 
 
         await generate_ss_from_link(
             message,
@@ -180,34 +169,46 @@ async def gdrive_screenshot(message, frame_count, url):
             file_url,
             headers,
             file_name,
-            frame_count,
-            file_duration=total_duration)
-
-    except MessageNotModified:
-        pass
-    except Exception:
+            frame_count, 
+            fps, hdr, timestamp)
+            
+    except MessageNotModified: pass
+    except Exception as error:
         await replymsg.edit(
-            f"Something went wrong with the given Gdrive link. Make sure the links is public and not rate limited.")
+            f"Something went wrong while processing gdrive link. Make sure that the gdrive link is public and not rate limited. ")
 
 
-async def ddl_screenshot(message, frame_count, url):
+
+async def ddl_screenshot(message, url, time, frame_count, fps, hdr, dv):
     """
-    Generates Screenshots from Direct Download links.
+    Generates Screenshots from Direct Download link.
     """
 
     replymsg = await message.reply_text(f"Checking direct download url....**", quote=True)
-
     try:
-
         file_url = f"'{url}'"
         file_name = re.search(".+/(.+)", url).group(1)
-
-        total_duration = subprocess.check_output(
-            f"ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 {file_url}",
-            shell=True).decode("utf-8")
-        total_duration = float(total_duration.strip())
+        if len(file_name) > 60:
+        	file_name = file_name[-60:]        
 
         headers = "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4136.7 Safari/537.36"
+        
+        #calculate total duration of the video file.
+        total_duration = await async_subprocess(
+            f"ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 {file_url}")
+        total_duration = float(total_duration.strip())
+        
+        #Generate a random timestamp between first 15-20% of the movie. 
+        timestamp = total_duration * (random.uniform(15, 20) / 100)                                       
+        
+        #check if manual timestamp is valid or not.
+        custom_timestamp = check_and_convert_time(time)
+        if custom_timestamp:       
+         	timestamp = custom_timestamp if custom_timestamp < total_duration else timestamp
+         	
+        #convering final timestamp into HH:MM:SS format
+        timestamp = str(datetime.timedelta(seconds=int(timestamp))) 
+
 
         await generate_ss_from_link(
             message,
@@ -216,119 +217,132 @@ async def ddl_screenshot(message, frame_count, url):
             headers,
             file_name,
             frame_count,
-            file_duration=float(total_duration))
+            fps, hdr,
+            timestamp)
 
-    except MessageNotModified:
-        pass
-    except Exception:
+    except MessageNotModified: pass
+    except Exception as error:
         return await replymsg.edit(
-            f"Something went wrong with the given url. Make sure that url is downloadable video file wich is non ip specific and should return proper response code without any required headers")
+            f"Something went wrong! make sure that the url is direct download video url.")
+
 
 
 async def telegram_screenshot(client, message, frame_count):
     """
-    Generates Screenshots from Telegram Video Files.
+    Generates Screenshots from Telegram Video File.
     """
+    
+    replymsg = await message.reply_text(f"Generating screenshots from Telegram file, please wait...", quote=True)
+    try:
+    	message = message.reply_to_message
+    	if message.text:
+    		return await replymsg.edit("Reply to a proper video file to generate screenshots.")
+    	
+    	elif message.media.value == "video":
+    	    media = message.video
+    	    
+    	elif message.media.value == "document":
+    		media = message.document
+    	
+    	else: return await replymsg.edit("can only generate screenshots from video file....")
+    	
+    	file_name = str(media.file_name)
+    	mime = media.mime_type
+    	file_size = media.file_size
+    	
+    	if message.media.value == "document" and "video" not in mime:
+    	    return await replymsg.edit("can only generate screenshots from video file.", quote=True)
+    	
+    	#limit of partial file to be downloaded for generating screenshots ( i.e, 150mb).
+    	download_limit: int = 150*1024*1024
+    	
+    	async for chunk in client.stream_media(message, limit=150):
+    	    with open(f"download/{file_name}", "ab") as file: file.write(chunk)
+    	
+    	#percentage of file that got downloaded.
+    	await replymsg.edit("Partial file downloaded...")
+    	
+    	if file_size < download_limit: downloaded_percentage = 100
+    	else: downloaded_percentage =  (download_limit/file_size) * 100
+    	
+    	mediainfo_json = await async_subprocess(f"mediainfo 'download/{file_name}' --Output=JSON")
+    	mediainfo_json = json.loads(mediainfo_json)
+    	total_duration = mediainfo_json["media"]["track"][0]["Duration"]
+    	
+    	partial_file_duration = float(total_duration) if downloaded_percentage == 100 else (downloaded_percentage * float(total_duration)) / 100
+    	
+    	await generate_ss_from_file(
+    	    message,
+    	    replymsg,
+    	    file_name,
+    	    frame_count,
+    	    file_duration=partial_file_duration)       
+                                            
+    except MessageNotModified: pass
+    except Exception as error:
+        await replymsg.edit(f"Something went wrong while generating screenshots from Telegram file.")
 
-    message = message.reply_to_message
-    if message.text:
-        return await message.reply_text("Reply to a proper video file to Generate Screenshots. **", quote=True)
+   
+       
+screenshot_help ="""Generates screenshots from Google Drive links, Telegram files, or direct download links.
 
-    elif message.media.value == "video":
-        media = message.video
+**--➜ Command - --**
 
-    elif message.media.value == "document":
-        media = message.document
+/ss or /screenshot [GDrive Link] or [DDL Link] or [Reply to Telegram file]
 
-    else:
-        return await message.reply_text("can only generate screenshots from video file....", quote=True)
+**--➜ Additional Flags - --**
 
-    file_name = str(media.file_name)
-    mime = media.mime_type
-    size = media.file_size
+`--count=10`  __[Number of screenshots. Default 10, Max 20]__
+`--fps=10`  __[Difference between two consecutive screenshots in seconds. Default 5, Max 15]__
+`--time=01:20:10`  __[Time from where the screenshots should be taken in HH:MM:SS format]__
+`--hdr`  __[For HDR Videos]__
 
-    if message.media.value == "document" and "video" not in mime:
-        return await message.reply_text("can only generate screenshots from video file....", quote=True)
+[ **Only** `--count` **flag will work for Telegram Files** ]
 
-    # Downloading partial file.
-    replymsg = await message.reply_text(f"Downloading partial video file....", quote=True)
-
-    if int(size) <= 200000000:
-        await message.download(os.path.join(os.getcwd(), file_name))
-        downloaded_percentage = 100  # (100% download)
-
-    else:
-        limit = ((25 * size) / 100) / 1000000
-        async for chunk in client.stream_media(message, limit=int(limit)):
-            with open(file_name, "ab") as file:
-                file.write(chunk)
-
-        downloaded_percentage = 25
-
-    await replymsg.edit("Partial file downloaded....")
-    # Partial file downloaded
-
-    mediainfo_json = json.loads(subprocess.check_output(["mediainfo", file_name, "--Output=JSON"]).decode("utf-8"))
-    total_duration = mediainfo_json["media"]["track"][0]["Duration"]
-
-    if downloaded_percentage == 100:
-        partial_file_duration = float(total_duration)
-    else:
-        partial_file_duration = (downloaded_percentage * float(total_duration)) / 100
-
-    await generate_ss_from_file(
-        message,
-        replymsg,
-        file_name,
-        frame_count,
-        file_duration=partial_file_duration)
+`/ss https://videolink.mkv --count=10 --fps=1 --hdr --time=00:20:00`"""
 
 
-mediainfo_usage = "Generates video frame screenshot from GoogleDrive links, Telegram files or direct download links."
-commands = ["screenshot", "ss"]
-
-
-@Client.on_message(filters.command(commands, **prefixes))
-async def screenshot(client, message: Message):
-    replied_message = message.reply_to_message
-    if replied_message:
-        try:
+@Client.on_message(filters.command(["screenshot", "ss"])& check_auth)
+async def screenshot(client: Client, message: Message):
+    """
+    Generates Screenshots from ddl, gdrive or Telegram files.
+    """
+    
+    if message.reply_to_message:
+        frame_count = 10        
+        if len(message.command) > 1:
             user_input = message.text.split(None, 1)[1]
-            frame_count = int(user_input.strip())
-        except:
-            frame_count = 5
-
-        if frame_count > 15:
-            frame_count = 15
-        return await telegram_screenshot(client, message, frame_count)
-
+            match = re.search(r"(-|--)count=(\d+)", user_input)
+            frame_count = int(match[2]) if match and match[2].isdigit() else 10
+            frame_count = min(frame_count, 20)        
+        return await telegram_screenshot(client, message, frame_count) 
+    	        	    
     if len(message.command) < 2:
-        return await message.reply_text(mediainfo_usage, quote=True)
-
+    	return await message.reply_text(screenshot_help, quote=True)
+  
     user_input = message.text.split(None, 1)[1]
-    if "|" in user_input:
+    match = re.search(r"(-|--)fps=(\d+)", user_input)
+    fps = int(match[2]) if match and match[2].isdigit() else 5
+    fps = min(fps, 15)
+    
+    match = re.search(r"(-|--)count=(\d+)", user_input)
+    frame_count = int(match[2]) if match and match[2].isdigit() else 10
+    frame_count = min(frame_count, 20)
 
-        frame_count = user_input.split("|")[-1].strip()
-        url = user_input.split("|")[0].strip()
-
-        try:
-            frame_count = int(frame_count)
-        except:
-            frame_count = 5
-        if frame_count > 15:
-            frame_count = 15
-
-    else:
-        frame_count = 5
-        url = user_input.split("|")[0].strip()
-
-    for (key, value) in SUPPORTED_URL_REGEX.items():
-        if bool(re.search(Rf"{key}", url)):
-
-            if value == "gdrive":
-                return await gdrive_screenshot(message, frame_count, url)
-
-            elif value == "ddl":
-                return await ddl_screenshot(message, frame_count, url)
-
-    return await message.reply_text("This type of link is not supported.", quote=True)
+    match = re.search("--time=(\d{2}:\d{2}:\d{2})", user_input)
+    time = match.group(1) if match else None
+         
+    hdr:bool = bool(re.search(r"(-|--)(hdr|HDR)", user_input))
+    dv :bool = bool(re.search(r"(-|--)(dv|DV)", user_input))
+      
+    if url_match := re.search(r"https://drive\.google\.com/\S+", user_input):
+    	url = url_match.group(0)
+    	return await gdrive_screenshot(message, url, time, frame_count, fps, hdr, dv)    	
+    	
+    if url_match := re.search(r"https?://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])", user_input):
+    	url = url_match.group(0)
+    	return await ddl_screenshot(message, url, time, frame_count, fps, hdr, dv)
+    
+    else: return await message.reply_text("This type of link is not supported.", quote=True)
+    
+    
