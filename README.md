@@ -66,7 +66,7 @@ ____
  
 <b> Install and update Dependencies 
 
-sh```
+```sh
 sudo apt-get update && sudo apt-get upgrade -y
 sudo apt-get install -y python3-pip
 sudo pip3 install -U pip
@@ -75,7 +75,7 @@ sudo apt-get install libsox-fmt-mp3
 ```
 clone the repository and install the requirements
 
-sh```
+```sh
 git clone https://github.com/sanjit-sinha/Tg-MediaInfoBot
 cd Tg-MediaInfoBot
 pip3 install -U -r requirements.txt
@@ -110,7 +110,7 @@ Now edit the config vars by typing `nano config.env` and save it by pressing <kb
 - Finally, run the script from inside of repository 
 <br>
  
-```
+```sh
 pip3 install google-api-python-client google-auth-httplib2 google-auth-oauthlib
 python3 token_generator.py
 ```
