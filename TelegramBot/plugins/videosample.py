@@ -97,7 +97,7 @@ async def gdrive_videosample(message, url, duration):
     except MessageNotModified: pass
     except Exception as error:
         await replymsg.edit(
-            f"Something went wrong while processing Gdrive link. Make sure that the link is public and is a proper video file. {error}")
+            f"Something went wrong while processing Gdrive link. Make sure that the link is public and is a proper video file.")
 
 
 async def ddl_videosample(message, url,  duration):
