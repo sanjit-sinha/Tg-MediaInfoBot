@@ -58,7 +58,7 @@ ____
 **--time=01:20:10**  *[Time from where the screenshots should be taken in HH:MM:SS format]*,
 **--hdr**  *[For HDR Videos]*
 
- ( Few more commands `/start` `/help` `/ping` `/update` `/logs` )
+ (Few more commands `/start` `/help` `/ping` `/update` `/logs`)
  
  _____
  
