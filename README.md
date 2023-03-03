@@ -72,6 +72,7 @@ sudo apt-get install -y python3-pip
 sudo pip3 install -U pip
 sudo apt-get install -y --no-install-recommends mediainfo ffmpeg
 sudo apt-get install libsox-fmt-mp3
+sudo apt-get install sox 
 ```
 clone the repository and install the requirements
 
