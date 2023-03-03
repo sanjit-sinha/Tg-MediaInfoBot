@@ -200,7 +200,7 @@ async def telegram_videosample(message, client, duration):
     	os.remove(output_path)
     	
     except Exception as error:
-        await message.reply_text(f"Something went wrong while generating video sample from Telegram file.", quote=True)
+        await message.reply_text(f"Something went wrong while generating sample video from Telegram file.", quote=True)
      
            	
            	        	      	         	      	 
