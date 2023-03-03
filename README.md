@@ -128,7 +128,8 @@ Now you can start the bot by simply typing `bash start` or `python3 -m TelegramB
 Now the bot will run 24*7 even if you logout from the server. [Click here to know about tmux and screen advance commands.](https://grizzled-cobalt-5da.notion.site/Terminal-Multiplexers-to-run-your-command-24-7-3b2f3fd15922411dbb9a46986bd0e116)
 <br >
 
-**Note** You can also Deploy Bot using Docker
+> **Note**
+You can also Deploy Bot using Docker
 
 > ```sh
 > docker build . -t mediainfobot 
