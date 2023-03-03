@@ -7,6 +7,7 @@ TgCrypto==1.2.4
 telegraph[aio]
 pyrate_limiter
 python-dotenv
+apscheduler 
 cachetools 
 aiofiles
 requests
