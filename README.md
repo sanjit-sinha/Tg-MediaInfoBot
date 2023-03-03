@@ -83,13 +83,11 @@ pip3 install -U -r requirements.txt
 
 Now edit the config vars by typing `nano config.env` and save it by pressing <kbd>ctrl</kbd>+<kbd>o</kbd> and <kbd>ctrl</kbd>+<kbd>x</kbd>.
 <br>
-<br>
 
 <details>
 <summary><strong>Getting Google OAuth API credential.json file and token.json (important)</strong></summary>
 <br>
 <ul>
- 
 <li>
 
 **NOTES**
@@ -119,21 +117,14 @@ python3 token_generator.py
 
 Now you can start the bot by simply typing `bash start` or `python3 -m TelegramBot`
 
-> **If you wanna run this bot 24/7 on the VPS, follow thesesteps.**
+> **The bot will stop working once you logout from the server. You can run the bot 24*7 in the server by using tmux.**
 > ```sh
 > sudo apt install tmux -y
 > tmux
-> python3 -m WebStreamer
+> bash start
 > ```
 > now you can close the VPS and the bot will run on it.
 
-The bot will stop working once you logout from the server. You can run the bot 24*7 in the server by using tmux.
-```
-sudo apt install tmux -y
-cd Tg-MediainfoBot
-tmux && bash start
-```
-  
 Now the bot will run 24*7 even if you logout from the server. [Click here to know about tmux and screen advance commands.](https://grizzled-cobalt-5da.notion.site/Terminal-Multiplexers-to-run-your-command-24-7-3b2f3fd15922411dbb9a46986bd0e116)
 
 _____
