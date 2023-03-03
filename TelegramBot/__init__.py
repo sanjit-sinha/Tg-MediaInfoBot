@@ -62,6 +62,9 @@ except RuntimeError:
     set_event_loop(new_event_loop())
     loop = get_event_loop()
 
+#creating download directory 
+if not os.path.exists("download"):
+  os.mkdir("download")
 
 async def clear_download():
   """Clear download directory after every 24 hour."""
@@ -74,8 +77,6 @@ scheduler = AsyncIOScheduler()
 scheduler.add_job(clear_download, "interval", minutes=1440)
 scheduler.start()
 
-#creating download directory 
-os.mkdir("download")
 
 LOGGER(__name__).info("initiating the client....")
 plugins = dict(root="TelegramBot/plugins")
