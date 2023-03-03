@@ -130,10 +130,7 @@ Now the bot will run 24*7 even if you logout from the server. [Click here to kno
 > **Note** You can also Deploy Bot using Docker
 > ```sh
 > docker build . -t mediainfobot 
-
-
-
->docker run mediainfobot
+> docker run mediainfobot
 >```
 
 _____
