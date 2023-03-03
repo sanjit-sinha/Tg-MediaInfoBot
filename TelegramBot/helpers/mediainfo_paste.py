@@ -216,7 +216,7 @@ def html_builder(title: str, text: str) -> str :
 	    		
 	    elif ":" in line:	    		
 	    	if "Attachments" in line: pass
-	    	if "ErrorDetectionType" in line: pass	    		
+	    	elif "ErrorDetectionType" in line: pass	    		
 	    	else: html_msg+= f"<div><code>{line.strip()}</code></div>"
 	    
 	    elif not bool(line): html_msg += "</span>"	  
