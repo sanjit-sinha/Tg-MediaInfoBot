@@ -1,5 +1,4 @@
 css = """
-<meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, target-densitydpi=device-dpi">
 <style>
 @font-face {
 font-family: 'JetBrainsMono';
@@ -169,18 +168,6 @@ padding-top: 0.25rem;
 </head>
 """
 
-footer = """
-<footer class="footer">
-<div class="footer-text">
-<div class="footer-text"><div class="loader-pulse"></div><a href="https://github.com/sanjit-sinha" style="color: #50fa7b;"><b>© 2023 sanjit-sinha  </b></a>
-<a href="https://github.com/sanjit-sinha/Tg-MediaInfoBot" style="color: #50fa7b; float: right;"><b>Github</b></a>
-</div>  
-</footer>
-</body>
-</head>
-
-"""
-
 import requests
 import json
 import re
@@ -234,8 +221,8 @@ def html_builder(title: str, text: str) -> str :
 	    
 	    elif not bool(line): html_msg += "</span>"	  
 	  
-    html_msg += "</span></body>" 
-    return css + html_msg + footer
+    html_msg += "</span>" 
+    return css + html_msg 
 
 
 def mediainfo_paste(text: str, title: str) -> str:
@@ -244,10 +231,10 @@ def mediainfo_paste(text: str, title: str) -> str:
     """
     
     html_content = html_builder(title, text)
-    URL = "https://mediainfo-1-y5870653.deta.app/sanjit/api"
+    URL = "https://mediainfo-1-y5870653.deta.app/sanjit/api/"
     response = requests.post(URL, json={"content": html_content})
     if response.status_code == 200:
-    	return f"https://mediainfo.deta.dev/{json.loads(response.content)['key']}"
+    	return f"https://mediainfo-1-y5870653.deta.app/sanjit/{json.loads(response.content)['key']}"
     else:  return "https://mediainfo.deta.dev/error"
 
 
