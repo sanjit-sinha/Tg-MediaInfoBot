@@ -60,7 +60,7 @@ ____
 
  ( Few more commands `/start` `/help` `/ping` `/update` `/logs` )
  
- _____
+______
  
 <h2 align="center"> Bot Deployment </h2>
  
@@ -123,19 +123,16 @@ Now you can start the bot by simply typing `bash start` or `python3 -m TelegramB
 > tmux
 > bash start
 > ```
-> now you can close the VPS and the bot will run on it.
 > Now the bot will run 24*7 even if you logout from the server. [Click here to know about tmux and screen advance commands.](https://grizzled-cobalt-5da.notion.site/Terminal-Multiplexers-to-run-your-command-24-7-3b2f3fd15922411dbb9a46986bd0e116)
 
 _____
 
-  
 <h2 align="center">Copyright and License</h1>
 <br>
 <img src="https://telegra.ph/file/b5850b957f081cfe5f0a6.png" align="right" width="110">
 
 * copyright (C) 2022 by [Sanjit sinha](https://github.com/sanjit-sinha)
 * Licensed under the terms of the [The MIT License](https://github.com/sanjit-sinha/Tg-MediaInfoBot/blob/main/LICENSE)
-
 
 -------
 
