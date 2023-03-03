@@ -86,7 +86,7 @@ async def ddl_mediainfo(_, message, url):
         filename = re.search(".+/(.+)", url).group(1)
         reply_msg = await message.reply_text("Generating Mediainfo, Please wait..", quote=True)
 
-        with requests.get(url, stream=True) as r:
+        with requests.get(url, stream=True, timeout=5) as r:
             with open(filename, 'wb') as f:
                 for chunk in r.iter_content(50000000): f.write(chunk); break
 
