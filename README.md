@@ -141,7 +141,7 @@ _____
 <br>
 <img src="https://telegra.ph/file/b5850b957f081cfe5f0a6.png" align="right" width="110">
 
-* copyright (C) 2022 by [Sanjit sinha](https://github.com/sanjit-sinha)
+* copyright (C) 2023 by [Sanjit sinha](https://github.com/sanjit-sinha)
 * Licensed under the terms of the [The MIT License](https://github.com/sanjit-sinha/Tg-MediaInfoBot/blob/main/LICENSE)
 
 
