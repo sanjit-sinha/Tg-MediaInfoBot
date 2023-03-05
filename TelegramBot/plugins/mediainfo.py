@@ -18,7 +18,7 @@ from TelegramBot.helpers.mediainfo_paste import mediainfo_paste
 from TelegramBot.helpers.gdrivehelper import GoogleDriveHelper
 
 
-async def gdrive_mediainfo(message, url):
+async def gdrive_mediainfo(message, url, isRaw):
     """
     Generates Mediainfo from a Google Drive file.
     """
@@ -65,10 +65,16 @@ async def gdrive_mediainfo(message, url):
         remove_N(lines)
         with open(f"{download_path}.txt", 'w') as f:
             f.write('\n'.join(lines))
-
-        with open(f"{download_path}.txt", "r+") as file:
-            content = file.read()
             
+        if isRaw:
+            await message.reply_document(f"{download_path}.txt", caption=f"**File Name :** `{filename}`")
+            os.remove(f"{download_path}.txt")
+            os.remove(f"{download_path}")
+            return 
+        	
+        with open(f"{download_path}.txt", "r+") as file:
+            content = file.read()            
+        	
         output = mediainfo_paste(text=content, title=filename)
         await reply_msg.edit(f"**File Name :** `{filename}`\n\n**Mediainfo :** {output}", disable_web_page_preview=False)
         
@@ -82,7 +88,7 @@ async def gdrive_mediainfo(message, url):
 
 
     
-async def ddl_mediainfo(message, url):
+async def ddl_mediainfo(message, url, isRaw):
     """
     Generates Mediainfo from a Direct Download Link.
     """
@@ -124,6 +130,12 @@ async def ddl_mediainfo(message, url):
         with open(f'{download_path}.txt', 'w') as f:
             f.write('\n'.join(lines))
 
+        if isRaw:
+            await message.reply_document(f"{download_path}.txt", caption=f"**File Name :** `{filename}`")
+            os.remove(f"{download_path}.txt")
+            os.remove(f"{download_path}")
+            return 
+        	        	
         with open(f"{download_path}.txt", "r+") as file:
             content = file.read()
             
@@ -140,7 +152,7 @@ async def ddl_mediainfo(message, url):
 
     
 
-async def telegram_mediainfo(client, message):
+async def telegram_mediainfo(client, message, isRaw):
     """
     Generates Mediainfo from a Telegram File.
     """
@@ -207,6 +219,12 @@ async def telegram_mediainfo(client, message):
     	with open(f'{download_path}.txt', 'w') as f:
     		f.write('\n'.join(lines))
     	
+    	if isRaw:
+    	    await message.reply_document(f"{download_path}.txt", caption=f"**File Name :** `{filename}`")
+    	    os.remove(f"{download_path}.txt")
+    	    os.remove(f"{download_path}")
+    	    return 
+        	    	
     	with open(f"{download_path}.txt", "r+") as file:
     	    content = file.read()
     	
@@ -225,21 +243,27 @@ async def telegram_mediainfo(client, message):
 
 @Client.on_message(filters.command(["mediainfo", "m"]) & check_auth)
 async def mediainfo(client, message: Message):
-    mediainfo_usage = f"**Generates mediainfo from Google Drive Links, Telegram files or direct download links. \n\nReply to any telegram file or just pass the link after the command."
+    mediainfo_usage = f"**Generates mediainfo from Google Drive Links, Telegram files or direct download links. \n\nReply to any telegram file or just pass the link after the command.\n\nUse `--r` flag for raw Mediainfo in document format."
     
     if message.reply_to_message:
-        return await telegram_mediainfo(client, message)
+        isRaw = False
+        if len(message.command) > 1:
+            user_input = message.text.split(None, 1)[1]
+            isRaw = bool(re.search(r"(-|--)r", user_input))
+        return await telegram_mediainfo(client, message, isRaw)
 
     if len(message.command) < 2:
         return await message.reply_text(mediainfo_usage, quote=True)
-        
-    user_input = message.text.split(None, 1)[1]    
+                   
+    user_input = message.text.split(None, 1)[1]
+    isRaw = bool(re.search(r"(-|--)r", user_input))
+    
     if url_match := re.search(r"https://drive\.google\.com/\S+", user_input):
     	url = url_match.group(0)
-    	return await gdrive_mediainfo( message, url)      	
+    	return await gdrive_mediainfo( message, url, isRaw)      	
     	
     if url_match := re.search(r"https?://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])", user_input):
     	url = url_match.group(0)
-    	return await ddl_mediainfo(message, url)
+    	return await ddl_mediainfo(message, url, isRaw)
     	    
     else: return await message.reply_text("This type of link is not supported.", quote=True)        
