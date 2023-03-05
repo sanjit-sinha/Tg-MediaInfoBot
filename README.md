@@ -53,12 +53,12 @@ ____
 
  <b> Additional Flags for screenshot and mediainfo command :- </b>
 
-**--count=10** *[Number of screenshots. Default 10, Max 20]*, 
-**--fps=10**  *[Difference between two consecutive screenshots in seconds. Default 5, Max 15]*.
-**--time=01:20:10**  *[Time from where the screenshots should be taken in HH:MM:SS format]*,
-**--hdr**  *[For HDR Videos]*
-<br>
-*Use* **--r** *flag for raw Mediainfo in document format.*
+**--count=10** *[ Number of screenshots. Default 10, Max 20 ]*, 
+**--fps=10**  *[ Difference between two consecutive screenshots in seconds. Default 5, Max 15 ]*.
+**--time=01:20:10**  *[ Time from where the screenshots should be taken in HH:MM:SS format ]*,
+**--hdr**  *[ For HDR Videos.]*
+
+**--r** *[ For raw Mediainfo in document format. ]*
 
  (Few more commands `/start` `/help` `/ping` `/update` `/logs`)
  
