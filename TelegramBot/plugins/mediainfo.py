@@ -243,7 +243,7 @@ async def telegram_mediainfo(client, message, isRaw):
 
 @Client.on_message(filters.command(["mediainfo", "m"]) & check_auth)
 async def mediainfo(client, message: Message):
-    mediainfo_usage = f"**Generates mediainfo from Google Drive Links, Telegram files or direct download links. \n\nReply to any telegram file or just pass the link after the command."
+    mediainfo_usage = f"**Generates mediainfo from Google Drive Links, Telegram files or direct download links. \n\nReply to any telegram file or just pass the link after the command.\n\nUse `--r` flag for raw Mediainfo in document format."
     
     if message.reply_to_message:
         isRaw = False
