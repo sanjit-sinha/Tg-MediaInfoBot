@@ -70,7 +70,7 @@ async def gdrive_mediainfo(message, url, isRaw):
             await message.reply_document(f"{download_path}.txt", caption=f"**File Name :** `{filename}`")
             os.remove(f"{download_path}.txt")
             os.remove(f"{download_path}")
-            return 
+            return await reply_msg.delete()
         	
         with open(f"{download_path}.txt", "r+") as file:
             content = file.read()            
@@ -134,7 +134,8 @@ async def ddl_mediainfo(message, url, isRaw):
             await message.reply_document(f"{download_path}.txt", caption=f"**File Name :** `{filename}`")
             os.remove(f"{download_path}.txt")
             os.remove(f"{download_path}")
-            return 
+            return await reply_msg.delete()
+           
         	        	
         with open(f"{download_path}.txt", "r+") as file:
             content = file.read()
@@ -223,7 +224,7 @@ async def telegram_mediainfo(client, message, isRaw):
     	    await message.reply_document(f"{download_path}.txt", caption=f"**File Name :** `{filename}`")
     	    os.remove(f"{download_path}.txt")
     	    os.remove(f"{download_path}")
-    	    return 
+    	    return await reply_msg.delete()
         	    	
     	with open(f"{download_path}.txt", "r+") as file:
     	    content = file.read()
