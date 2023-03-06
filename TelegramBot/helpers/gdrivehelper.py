@@ -63,12 +63,10 @@ class GoogleDriveHelper:
         else:
             try:
                 credentials = Credentials.from_authorized_user_info(
-                    access_token, self.OAUTH_SCOPE
-                )
+                    access_token, self.OAUTH_SCOPE)
             except:
                 raise GdriveHelperException(
-                    "Something wrong with the given token.json file."
-                )
+                    "Something wrong with the given token.json file.")
 
         if credentials is None or not credentials.valid:
             if credentials and credentials.expired and credentials.refresh_token:
@@ -86,17 +84,13 @@ class GoogleDriveHelper:
 
         try:
             service = build(
-                "drive", "v3", cache_discovery=False, credentials=credentials
-            )
+                "drive", "v3", cache_discovery=False, credentials=credentials)
             metadata = (
                 service.files()
                 .get(
                     fileId=file_id,
                     fields="name, size, mimeType",
-                    supportsAllDrives=True,
-                )
-                .execute()
-            )
+                    supportsAllDrives=True).execute())
 
         except HttpError as error:
             raise GdriveHelperException(error.reason) from error
@@ -104,7 +98,8 @@ class GoogleDriveHelper:
 
     def get_bearer_token(self):
         """
-        Return Authentication Bearer token to pass down as header for downloading Gdrive Links.
+        Return Authentication Bearer token to pass down as header 
+        for downloading Gdrive Links.
         """
 
         credentials = self.get_credentials()
