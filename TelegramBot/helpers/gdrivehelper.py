@@ -98,7 +98,7 @@ class GoogleDriveHelper:
 
     def get_bearer_token(self):
         """
-        Return Authentication Bearer token to pass down as header 
+        Return Authentication Bearer token to pass down as header
         for downloading Gdrive Links.
         """
 
