@@ -195,7 +195,7 @@ async def ddl_screenshot(message, url, time, frame_count, fps, hdr, dv):
     """
 
     replymsg = await message.reply_text(
-        f"Checking direct download url....**", quote=True)
+        "Checking direct download url....**", quote=True)
     try:
         file_url = f"'{url}'"
         file_name = re.search(".+/(.+)", url).group(1)
@@ -246,7 +246,7 @@ async def telegram_screenshot(client, message, frame_count):
     """
 
     replymsg = await message.reply_text(
-        f"Generating screenshots from Telegram file, please wait...", quote=True)
+        "Generating screenshots from Telegram file, please wait...", quote=True)
     try:
         message = message.reply_to_message
         if message.text:
@@ -254,7 +254,7 @@ async def telegram_screenshot(client, message, frame_count):
                 "Reply to a proper video file to generate screenshots."
             )
 
-        elif message.media.value == "video":
+        if message.media.value == "video":
             media = message.video
 
         elif message.media.value == "document":
@@ -308,7 +308,7 @@ async def telegram_screenshot(client, message, frame_count):
         pass
     except Exception as error:
         await replymsg.edit(
-            f"Something went wrong while generating screenshots from Telegram file.")
+            "Something went wrong while generating screenshots from Telegram file.")
 
 
 screenshot_help = """Generates screenshots from Google Drive links, Telegram files, or direct download links.
@@ -372,7 +372,5 @@ async def screenshot(client: Client, message: Message):
     ):
         url = url_match.group(0)
         return await ddl_screenshot(message, url, time, frame_count, fps, hdr, dv)
-
-    else:
-        return await message.reply_text(
-            "This type of link is not supported.", quote=True)
+    return await message.reply_text(
+        "This type of link is not supported.", quote=True)

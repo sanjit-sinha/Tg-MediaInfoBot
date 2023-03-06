@@ -39,7 +39,7 @@ async def generate_spek(_, message: Message):
             "Can only generate spectrum from audio file....", quote=True)
 
     replymsg = await message.reply_text(
-        f"Generating Spectrogram of the audio. Please wait...", quote=True)
+        "Generating Spectrogram of the audio. Please wait...", quote=True)
     await message.download(os.path.join(os.getcwd(), "download", file_name))
 
     if "m4a" in mime.lower() or "audio/mp4" in mime.lower():

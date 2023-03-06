@@ -110,7 +110,7 @@ async def ddl_videosample(message, url, duration):
     """
 
     replymsg = await message.reply_text(
-        f"Checking direct download url....**", quote=True)
+        "Checking direct download url....**", quote=True)
     try:
         file_url = f"'{url}'"
         filename = re.search(".+/(.+)", url).group(1)
@@ -152,7 +152,7 @@ async def telegram_videosample(message, client, duration):
             return await message.reply_text(
                 "Reply to a proper video file to Generate sample.", quote=True)
 
-        elif message.media.value == "video":
+        if message.media.value == "video":
             media = message.video
 
         elif message.media.value == "document":
@@ -213,7 +213,7 @@ async def telegram_videosample(message, client, duration):
 
     except Exception as error:
         await message.reply_text(
-            f"Something went wrong while generating sample video from Telegram file.",
+            "Something went wrong while generating sample video from Telegram file.",
             quote=True)
 
 
@@ -243,14 +243,13 @@ async def videosample_duration(client, CallbackQuery):
         return await gdrive_videosample(
             message, info_dictionary[message_id]["url"], duration
         )
-    elif link_type == "ddl":
+    if link_type == "ddl":
         return await ddl_videosample(
             message, info_dictionary[message_id]["url"], duration
         )
-    else:
-        return await telegram_videosample(
-            message, info_dictionary[message_id]["client"], duration
-        )
+    return await telegram_videosample(
+        message, info_dictionary[message_id]["client"], duration
+    )
 
 
 @Client.on_message(filters.command(["sample", "trim"]) & check_auth)
@@ -299,6 +298,5 @@ async def video_sample(client: Client, message: Message):
             "Choose time duration of sample video.",
             reply_markup=InlineKeyboardMarkup(sample_duration),
             quote=True)
-    else:
-        return await message.reply_text(
-            "This type of link is not supported.", quote=True)
+    return await message.reply_text(
+        "This type of link is not supported.", quote=True)

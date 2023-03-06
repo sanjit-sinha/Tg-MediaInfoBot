@@ -31,6 +31,6 @@ async def log(client: Client, message: Message):
             "logs.txt",
             caption="logs.txt",
             reply_to_message_id=message.id)
-        
+
     except Exception as error:
         await message.reply_text(f"{error}", quote=True)

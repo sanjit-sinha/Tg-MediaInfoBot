@@ -172,7 +172,7 @@ async def ddl_mediainfo(message, url, isRaw):
     except Exception as error:
         await reply_msg.delete()
         return await message.reply_text(
-            f"Something went wrong while generating Mediainfo from the given url.",
+            "Something went wrong while generating Mediainfo from the given url.",
             quote=True)
 
 
@@ -189,7 +189,7 @@ async def telegram_mediainfo(client, message, isRaw):
             return await message.reply_text(
                 "Reply to a proper media file for generating Mediainfo.**", quote=True)
 
-        elif message.media.value == "video":
+        if message.media.value == "video":
             media = message.video
 
         elif message.media.value == "audio":
@@ -273,7 +273,7 @@ async def telegram_mediainfo(client, message, isRaw):
     except Exception as error:
         await reply_msg.delete()
         await message.reply_text(
-            f"Something went wrong while generating Mediainfo from replied Telegram file.",
+            "Something went wrong while generating Mediainfo from replied Telegram file.",
             quote=True)
 
 
@@ -304,7 +304,5 @@ async def mediainfo(client, message: Message):
     ):
         url = url_match.group(0)
         return await ddl_mediainfo(message, url, isRaw)
-
-    else:
-        return await message.reply_text(
-            "This type of link is not supported.", quote=True)
+    return await message.reply_text(
+        "This type of link is not supported.", quote=True)
