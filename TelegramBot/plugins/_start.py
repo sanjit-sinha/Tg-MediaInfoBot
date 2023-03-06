@@ -17,7 +17,7 @@ START_BUTTON = [
     ],
     [
         InlineKeyboardButton(
-            "🔭 Original Repo", url=f"https://github.com/sanjit-sinha/Tg-MediaInfoBot"
+            "🔭 Original Repo", url="https://github.com/sanjit-sinha/Tg-MediaInfoBot"
         )
     ],
 ]
