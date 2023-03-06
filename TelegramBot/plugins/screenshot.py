@@ -61,12 +61,10 @@ async def slowpics_collection(message, file_name, path):
         }
 
         response = client.post(
-            "https://slow.pics/api/collection", data=files, headers=headers
-        )
+            "https://slow.pics/api/collection", data=files, headers=headers)
         await msg.edit(
             f"File Name: `{unquote(file_name)}`\n\nFrames: https://slow.pics/c/{response.text}",
-            disable_web_page_preview=True,
-        )
+            disable_web_page_preview=True)
 
 
 async def generate_ss_from_file(
@@ -182,8 +180,7 @@ async def gdrive_screenshot(message, url, time, frame_count, fps, hdr, dv):
             frame_count,
             fps,
             hdr,
-            timestamp,
-        )
+            timestamp)
 
     except MessageNotModified:
         pass
@@ -234,8 +231,7 @@ async def ddl_screenshot(message, url, time, frame_count, fps, hdr, dv):
             frame_count,
             fps,
             hdr,
-            timestamp,
-        )
+            timestamp)
 
     except MessageNotModified:
         pass
@@ -306,8 +302,7 @@ async def telegram_screenshot(client, message, frame_count):
             replymsg,
             file_name,
             frame_count,
-            file_duration=partial_file_duration,
-        )
+            file_duration=partial_file_duration)
 
     except MessageNotModified:
         pass
