@@ -24,8 +24,13 @@ async def log(client: Client, message: Message):
     """
     upload log file of the bot in telegram.
     """
-    
+
     try:
-        await client.send_document(message.chat.id, "logs.txt", caption="logs.txt", reply_to_message_id=message.id)
+        await client.send_document(
+            message.chat.id,
+            "logs.txt",
+            caption="logs.txt",
+            reply_to_message_id=message.id,
+        )
     except Exception as error:
         await message.reply_text(f"{error}", quote=True)

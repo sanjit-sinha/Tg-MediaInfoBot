@@ -3,8 +3,10 @@ import os
 from logging.handlers import RotatingFileHandler
 
 # removing old logs file if they exist.
-try: os.remove("logs.txt")
-except: pass
+try:
+    os.remove("logs.txt")
+except:
+    pass
 
 logging.basicConfig(
     level=logging.INFO,
@@ -12,10 +14,13 @@ logging.basicConfig(
     datefmt="%d-%b-%y %H:%M:%S",
     handlers=[
         RotatingFileHandler("logs.txt", mode="w+", maxBytes=5000000, backupCount=10),
-        logging.StreamHandler()])
+        logging.StreamHandler(),
+    ],
+)
 
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
-logging.getLogger('googleapicliet.discovery_cache').setLevel(logging.ERROR)
+logging.getLogger("googleapicliet.discovery_cache").setLevel(logging.ERROR)
+
 
 def LOGGER(name: str) -> logging.Logger:
     return logging.getLogger(name)
