@@ -207,7 +207,6 @@ async def telegram_mediainfo(client, message, isRaw):
                 quote=True)
 
         filename = str(media.file_name)
-        mime = media.mime_type
         size = media.file_size
 
         rand_str = randstr()
@@ -253,8 +252,7 @@ async def telegram_mediainfo(client, message, isRaw):
 
         if isRaw:
             await message.reply_document(
-                f"{download_path}.txt", caption=f"**File Name :** `{filename}`"
-            )
+                f"{download_path}.txt", caption=f"**File Name :** `{filename}`")
             os.remove(f"{download_path}.txt")
             os.remove(f"{download_path}")
             return await reply_msg.delete()
