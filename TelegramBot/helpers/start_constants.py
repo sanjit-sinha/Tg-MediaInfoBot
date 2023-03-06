@@ -1,4 +1,4 @@
-from TelegramBot.version import (__python_version__, __version__, __pyro_version__)
+from TelegramBot.version import __python_version__, __version__, __pyro_version__
 
 
 COMMAND_TEXT = """🗒️ Documentation for commands available to user's 
@@ -28,6 +28,3 @@ ABOUT_CAPTION = f"""• Python version : {__python_version__}
 START_ANIMATION = "https://telegra.ph/file/c0857672b427bec8542f6.mp4"
 
 START_CAPTION = """Hello! I am a Telegram Bot designed to generate frames from video files, provide sample video files, and offer mediainfo for Telegram files, Direct download links and Google Drive links."""
-
-
-

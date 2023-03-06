@@ -4,7 +4,7 @@ import json
 import time
 import shutil
 from asyncio import get_event_loop, new_event_loop, set_event_loop
-import uvloop 
+import uvloop
 import requests
 
 from pyrogram import Client
@@ -40,7 +40,6 @@ with open(f"{os.getcwd()}/token.json", "r") as file:
 access_token = json.loads(access_token)
 
 
-
 BANNER = """
 ____________________________________________________________________
 |  _______   _                                ____        _        |
@@ -62,15 +61,16 @@ except RuntimeError:
     set_event_loop(new_event_loop())
     loop = get_event_loop()
 
-#creating download directory 
+# creating download directory
 if not os.path.exists("download"):
-  os.mkdir("download")
+    os.mkdir("download")
+
 
 async def clear_download():
-  """Clear download directory after every 24 hour."""
-  
-  shutil.rmtree("download")
-  os.mkdir("download")
+    """Clear download directory after every 24 hour."""
+
+    shutil.rmtree("download")
+    os.mkdir("download")
 
 
 scheduler = AsyncIOScheduler()
@@ -85,4 +85,5 @@ bot = Client(
     api_id=API_ID,
     api_hash=API_HASH,
     bot_token=BOT_TOKEN,
-    plugins=plugins)
+    plugins=plugins,
+)

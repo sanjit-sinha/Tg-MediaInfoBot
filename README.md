@@ -21,7 +21,7 @@
 - Creating screenshots from Google Drive links, direct download links, and Telegram files, and posting them on slow.pics
 - Generating custom-duration video samples from video files.
 - Creating spectrograms of Telegram audio files and displaying them as images.
-- pasting the text on the katb.in website.
+- pasting the text in the katb.in website.
 
 
 Note: This Bot is made on top of this repository -> https://github.com/sanjit-sinha/TelegramBot-Boilerplate 

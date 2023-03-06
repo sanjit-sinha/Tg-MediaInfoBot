@@ -171,58 +171,75 @@ padding-top: 0.25rem;
 import requests
 import json
 import re
-		
 
-def html_builder(title: str, text: str) -> str :
+
+def html_builder(title: str, text: str) -> str:
     """
     Make proper html with css from given content.
     """
-    
+
     heading = "<span class='container heading'><b>{content}</b></span>"
     subheading = "<span class='container subheading'><b>{content}</b></span>"
     infobox = "<span class='container infobox'>"
     subtitlebox = "<span class='container subtitlebox'>"
-    icon = "<img class='icons' src={icon_url} width='35px' height='35px' alt='' >"	
-    html_msg = "<body>" + heading.format(content=title) 
-    
+    icon = "<img class='icons' src={icon_url} width='35px' height='35px' alt='' >"
+    html_msg = "<body>" + heading.format(content=title)
+
     for line in text.splitlines():
-	    if ":" not in line and bool(line):
-	    	if "Text #" in line:
-	    		if bool(re.search("Text #1$", line)):
-	    			subtitle_count = len(re.findall("Text #", text))
-	    			html_msg += icon.format(icon_url="https://te.legra.ph/file/9d4a676445544d0f2d6db.png")
-	    			html_msg += subheading.format(content =f"Subtitles ({subtitle_count} subtitle)")
-	    			html_msg += "<span  style='padding: 10px 0vw;'  class='subtitle'>"
-	    			    	
-	    	elif "General" in line:
-	    		html_msg += icon.format(icon_url="https://te.legra.ph/file/638fb0416f2600e7c5aa3.png")	
-	    		html_msg +=subheading.format(content ="General")
-	    		
-	    	elif "Video" in line:
-	    		html_msg += icon.format(icon_url="https://te.legra.ph/file/fbc30d71cf71c9a54e59d.png")		
-	    		html_msg += subheading.format(content ="Video")
-	    	
-	    	elif "Audio" in line:
-	    		html_msg += icon.format(icon_url="https://te.legra.ph/file/a3c431be457fedbae2286.png")
-	    		html_msg += subheading.format(content= f"{line.strip()}")
-	    	
-	    	elif "Menu" in line:
-	    		html_msg += "</span>"	
-	    		html_msg += icon.format(icon_url="https://te.legra.ph/file/3023b0c2bc202ec9d6d0d.png")
-	    		html_msg += subheading.format(content="Chapters")
-	
-	    	else: html_msg += subheading.format(content= f"{line.strip()}")
-	    	html_msg += subtitlebox  if "Text #" in line else infobox
-	    		
-	    elif ":" in line:	    		
-	    	if "Attachments" in line: pass
-	    	elif "ErrorDetectionType" in line: pass	    		
-	    	else: html_msg+= f"<div><code>{line.strip()}</code></div>"
-	    
-	    elif not bool(line): html_msg += "</span>"	  
-	  
-    html_msg += "</span>" 
-    return css + html_msg 
+        if ":" not in line and bool(line):
+            if "Text #" in line:
+                if bool(re.search("Text #1$", line)):
+                    subtitle_count = len(re.findall("Text #", text))
+                    html_msg += icon.format(
+                        icon_url="https://te.legra.ph/file/9d4a676445544d0f2d6db.png"
+                    )
+                    html_msg += subheading.format(
+                        content=f"Subtitles ({subtitle_count} subtitle)"
+                    )
+                    html_msg += "<span  style='padding: 10px 0vw;'  class='subtitle'>"
+
+            elif "General" in line:
+                html_msg += icon.format(
+                    icon_url="https://te.legra.ph/file/638fb0416f2600e7c5aa3.png"
+                )
+                html_msg += subheading.format(content="General")
+
+            elif "Video" in line:
+                html_msg += icon.format(
+                    icon_url="https://te.legra.ph/file/fbc30d71cf71c9a54e59d.png"
+                )
+                html_msg += subheading.format(content="Video")
+
+            elif "Audio" in line:
+                html_msg += icon.format(
+                    icon_url="https://te.legra.ph/file/a3c431be457fedbae2286.png"
+                )
+                html_msg += subheading.format(content=f"{line.strip()}")
+
+            elif "Menu" in line:
+                html_msg += "</span>"
+                html_msg += icon.format(
+                    icon_url="https://te.legra.ph/file/3023b0c2bc202ec9d6d0d.png"
+                )
+                html_msg += subheading.format(content="Chapters")
+
+            else:
+                html_msg += subheading.format(content=f"{line.strip()}")
+            html_msg += subtitlebox if "Text #" in line else infobox
+
+        elif ":" in line:
+            if "Attachments" in line:
+                pass
+            elif "ErrorDetectionType" in line:
+                pass
+            else:
+                html_msg += f"<div><code>{line.strip()}</code></div>"
+
+        elif not bool(line):
+            html_msg += "</span>"
+
+    html_msg += "</span>"
+    return css + html_msg
 
 
 def mediainfo_paste(text: str, title: str) -> str:
@@ -230,10 +247,6 @@ def mediainfo_paste(text: str, title: str) -> str:
     URL = "https://mediainfo-1-y5870653.deta.app/api"
     response = requests.post(URL, json={"content": html_content})
     if response.status_code == 200:
-    	return f"https://mediainfo-1-y5870653.deta.app/{json.loads(response.content)['key']}"
-    else:  return "https://mediainfo.deta.dev/error"
-
-
-
-	
-
+        return f"https://mediainfo-1-y5870653.deta.app/{json.loads(response.content)['key']}"
+    else:
+        return "https://mediainfo.deta.dev/error"
