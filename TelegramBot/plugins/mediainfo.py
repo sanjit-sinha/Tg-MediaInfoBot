@@ -45,8 +45,7 @@ async def gdrive_mediainfo(message, url, isRaw):
 
         mediainfo = await async_subprocess(f"mediainfo {download_path}")
         mediainfo_json = await async_subprocess(
-            f"mediainfo {download_path} --Output=JSON"
-        )
+            f"mediainfo {download_path} --Output=JSON")
         mediainfo_json = json.loads(mediainfo_json)
 
         filesize = get_readable_bytes(float(metadata["size"]))
@@ -79,8 +78,7 @@ async def gdrive_mediainfo(message, url, isRaw):
 
         if isRaw:
             await message.reply_document(
-                f"{download_path}.txt", caption=f"**File Name :** `{filename}`"
-            )
+                f"{download_path}.txt", caption=f"**File Name :** `{filename}`")
             os.remove(f"{download_path}.txt")
             os.remove(f"{download_path}")
             return await reply_msg.delete()
@@ -91,8 +89,7 @@ async def gdrive_mediainfo(message, url, isRaw):
         output = mediainfo_paste(text=content, title=filename)
         await reply_msg.edit(
             f"**File Name :** `{filename}`\n\n**Mediainfo :** {output}",
-            disable_web_page_preview=False,
-        )
+            disable_web_page_preview=False)
 
         os.remove(f"{download_path}.txt")
         os.remove(f"{download_path}")
@@ -101,8 +98,7 @@ async def gdrive_mediainfo(message, url, isRaw):
         await reply_msg.delete()
         return await message.reply_text(
             f"Something went wrong while processing Gdrive link.\n\n (Make sure that the gdrive link is not rate limited, is public link and not a folder)",
-            quote=True,
-        )
+            quote=True)
 
 
 async def ddl_mediainfo(message, url, isRaw):
@@ -111,8 +107,7 @@ async def ddl_mediainfo(message, url, isRaw):
     """
 
     reply_msg = await message.reply_text(
-        "Generating Mediainfo, Please wait...", quote=True
-    )
+        "Generating Mediainfo, Please wait...", quote=True)
     try:
         filename = re.search(".+/(.+)", url).group(1)
         if len(filename) > 60:
@@ -129,8 +124,7 @@ async def ddl_mediainfo(message, url, isRaw):
 
         mediainfo = await async_subprocess(f"mediainfo {download_path}")
         mediainfo_json = await async_subprocess(
-            f"mediainfo {download_path} --Output=JSON"
-        )
+            f"mediainfo {download_path} --Output=JSON")
         mediainfo_json = json.loads(mediainfo_json)
 
         filesize = requests.head(url).headers.get("content-length")
@@ -141,8 +135,7 @@ async def ddl_mediainfo(message, url, isRaw):
 
             elif "File size" in lines[i]:
                 lines[i] = re.sub(
-                    r": .+", ": " + get_readable_bytes(float(filesize)), lines[i]
-                )
+                    r": .+", ": " + get_readable_bytes(float(filesize)), lines[i])
 
             elif (
                 "Overall bit rate" in lines[i]
@@ -160,8 +153,7 @@ async def ddl_mediainfo(message, url, isRaw):
 
         if isRaw:
             await message.reply_document(
-                f"{download_path}.txt", caption=f"**File Name :** `{filename}`"
-            )
+                f"{download_path}.txt", caption=f"**File Name :** `{filename}`")
             os.remove(f"{download_path}.txt")
             os.remove(f"{download_path}")
             return await reply_msg.delete()
@@ -172,8 +164,7 @@ async def ddl_mediainfo(message, url, isRaw):
         output = mediainfo_paste(text=content, title=filename)
         await reply_msg.edit(
             f"**File Name :** `{unquote(filename)}`\n\n**Mediainfo :** {output}",
-            disable_web_page_preview=False,
-        )
+            disable_web_page_preview=False)
 
         os.remove(f"{download_path}.txt")
         os.remove(f"{download_path}")
@@ -182,8 +173,7 @@ async def ddl_mediainfo(message, url, isRaw):
         await reply_msg.delete()
         return await message.reply_text(
             f"Something went wrong while generating Mediainfo from the given url.",
-            quote=True,
-        )
+            quote=True)
 
 
 async def telegram_mediainfo(client, message, isRaw):
@@ -192,14 +182,12 @@ async def telegram_mediainfo(client, message, isRaw):
     """
 
     reply_msg = await message.reply_text(
-        "Generating Mediainfo, Please wait...", quote=True
-    )
+        "Generating Mediainfo, Please wait...", quote=True)
     try:
         message = message.reply_to_message
         if message.text:
             return await message.reply_text(
-                "Reply to a proper media file for generating Mediainfo.**", quote=True
-            )
+                "Reply to a proper media file for generating Mediainfo.**", quote=True)
 
         elif message.media.value == "video":
             media = message.video
@@ -216,8 +204,7 @@ async def telegram_mediainfo(client, message, isRaw):
         else:
             return await message.reply_text(
                 "This type of media is not supported for generating Mediainfo.**",
-                quote=True,
-            )
+                quote=True)
 
         filename = str(media.file_name)
         mime = media.mime_type
@@ -236,8 +223,7 @@ async def telegram_mediainfo(client, message, isRaw):
 
         mediainfo = await async_subprocess(f"mediainfo '{download_path}'")
         mediainfo_json = await async_subprocess(
-            f"mediainfo '{download_path}' --Output=JSON"
-        )
+            f"mediainfo '{download_path}' --Output=JSON")
         mediainfo_json = json.loads(mediainfo_json)
 
         readable_size = get_readable_bytes(size)
@@ -279,8 +265,7 @@ async def telegram_mediainfo(client, message, isRaw):
         output = mediainfo_paste(text=content, title=filename)
         await reply_msg.edit(
             f"**File Name :** `{filename}`\n\n**Mediainfo :** {output}",
-            disable_web_page_preview=False,
-        )
+            disable_web_page_preview=False)
 
         os.remove(f"{download_path}.txt")
         os.remove(download_path)
@@ -289,8 +274,7 @@ async def telegram_mediainfo(client, message, isRaw):
         await reply_msg.delete()
         await message.reply_text(
             f"Something went wrong while generating Mediainfo from replied Telegram file.",
-            quote=True,
-        )
+            quote=True)
 
 
 @Client.on_message(filters.command(["mediainfo", "m"]) & check_auth)
@@ -323,5 +307,4 @@ async def mediainfo(client, message: Message):
 
     else:
         return await message.reply_text(
-            "This type of link is not supported.", quote=True
-        )
+            "This type of link is not supported.", quote=True)
