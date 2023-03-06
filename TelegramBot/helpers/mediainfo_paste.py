@@ -53,6 +53,9 @@ font-style: normal;
 
 body {
 background-color: #282a36;
+width: 100%;
+max-width: 800px;
+margin: 0 auto;
 font-family:  "Josefin Sans", sans-serif;
 color: #f8f8f2;
 overscroll-behaviour: contain;
@@ -226,9 +229,6 @@ def html_builder(title: str, text: str) -> str :
 
 
 def mediainfo_paste(text: str, title: str) -> str:
-    """
-    paste html content in mediainfo.deta.dev
-    """
     
     html_content = html_builder(title, text)
     URL = "https://mediainfo-1-y5870653.deta.app/api"
