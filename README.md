@@ -15,13 +15,6 @@
 
 ----
 
-![](https://te.legra.ph/file/9316fc0e3e6d8da8a066c.jpg) | ![](https://te.legra.ph/file/40ffe2791139e7bcbea03.jpg) | ![](https://te.legra.ph/file/b2f025ce4a5967dd29168.jpg) |
-|----------------------------------------------------------|----------------------------------------------------------|----------------------------------------------------------|
-![](https://te.legra.ph/file/7bffbfd8db669065b6252.jpg) | ![](https://te.legra.ph/file/503f8220837b56b133f52.jpg) | ![](https://te.legra.ph/file/4cf86a41b96c8d04e0708.jpg) |
-|----------------------------------------------------------|----------------------------------------------------------|----------------------------------------------------------|
-
-----
-
 <b> This Telegram Bot can perform various tasks with media files, such as :- </b>
 
 - Generating Mediainfo from Google Drive links, direct download links, and Telegram files, and displaying the information on a custom-designed website.
