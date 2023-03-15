@@ -9,19 +9,19 @@ import requests
 from urllib.parse import unquote
 
 from pyrogram import Client, filters
+from TelegramBot.logging import LOGGER
 from pyrogram.errors import MessageNotModified
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
-from TelegramBot.helpers.filters import check_auth
 from TelegramBot.helpers.functions import *
+from TelegramBot.helpers.filters import check_auth
 from TelegramBot.helpers.gdrivehelper import GoogleDriveHelper
 
 
 # thumbnail of the video file.
 thumb_path = f"thumb.jpg"
 thumb = requests.get(
-    "https://te.legra.ph/file/508f1cd599bb3d9352e88.jpg", allow_redirects=True
-)
+    "https://te.legra.ph/file/508f1cd599bb3d9352e88.jpg", allow_redirects=True)
 open(thumb_path, "wb").write(thumb.content)
 
 
@@ -100,7 +100,8 @@ async def gdrive_videosample(message, url, duration):
     except MessageNotModified:
         pass
     except Exception as error:
-        await replymsg.edit(
+        LOGGER(__name__).error(error)
+        return await replymsg.edit(
             f"Something went wrong while processing Gdrive link. Make sure that the link is public and is a proper video file.")
 
 
@@ -137,6 +138,7 @@ async def ddl_videosample(message, url, duration):
     except MessageNotModified:
         pass
     except Exception as error:
+        LOGGER(__name__).error(error)
         return await replymsg.edit(
             f"Something went wrong! Make sure that the URL is direct download video file link.")
 
@@ -212,7 +214,8 @@ async def telegram_videosample(message, client, duration):
         os.remove(output_path)
 
     except Exception as error:
-        await message.reply_text(
+        LOGGER(__name__).error(error)
+        return await message.reply_text(
             "Something went wrong while generating sample video from Telegram file.",
             quote=True)
 
@@ -233,23 +236,21 @@ async def videosample_duration(client, CallbackQuery):
     duration = int(CallbackQuery.data.split("_")[-1])
     message_id = CallbackQuery.message.reply_to_message.id
     await client.delete_messages(
-        CallbackQuery.message.chat.id, CallbackQuery.message.id
-    )
+        CallbackQuery.message.chat.id, CallbackQuery.message.id)
 
     message = info_dictionary[message_id]["message"]
     link_type = info_dictionary[message_id]["type"]
 
     if link_type == "gdrive":
         return await gdrive_videosample(
-            message, info_dictionary[message_id]["url"], duration
-        )
+            message, info_dictionary[message_id]["url"], duration)
+            
     if link_type == "ddl":
         return await ddl_videosample(
-            message, info_dictionary[message_id]["url"], duration
-        )
+            message, info_dictionary[message_id]["url"], duration)
+            
     return await telegram_videosample(
-        message, info_dictionary[message_id]["client"], duration
-    )
+        message, info_dictionary[message_id]["client"], duration)
 
 
 @Client.on_message(filters.command(["sample", "trim"]) & check_auth)
