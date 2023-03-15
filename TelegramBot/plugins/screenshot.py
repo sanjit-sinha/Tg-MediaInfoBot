@@ -16,6 +16,7 @@ from pyrogram import Client, filters
 from pyrogram.errors import MessageNotModified
 
 from TelegramBot.helpers.functions import *
+from TelegramBot.logging import LOGGER
 from TelegramBot.helpers.filters import check_auth
 from TelegramBot.helpers.gdrivehelper import GoogleDriveHelper
 
@@ -35,16 +36,14 @@ async def slowpics_collection(message, file_name, path):
         "collectionName": f"{unquote(file_name)}",
         "hentai": "false",
         "optimizeImages": "false",
-        "public": "false",
-    }
+        "public": "false"}
 
     for i in range(0, len(img_list)):
         data[f"images[{i}].name"] = img_list[i].split(".")[0]
         data[f"images[{i}].file"] = (
             img_list[i],
             open(f"{path}/{img_list[i]}", "rb"),
-            "image/png",
-        )
+            "image/png")
 
     with requests.Session() as client:
         client.get("https://slow.pics/api/collection")
@@ -57,8 +56,7 @@ async def slowpics_collection(message, file_name, path):
             "Origin": "https://slow.pics/",
             "Referer": "https://slow.pics/collection",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36",
-            "X-XSRF-TOKEN": client.cookies.get_dict()["XSRF-TOKEN"],
-        }
+            "X-XSRF-TOKEN": client.cookies.get_dict()["XSRF-TOKEN"]}
 
         response = client.post(
             "https://slow.pics/api/collection", data=files, headers=headers)
@@ -185,7 +183,8 @@ async def gdrive_screenshot(message, url, time, frame_count, fps, hdr, dv):
     except MessageNotModified:
         pass
     except Exception as error:
-        await replymsg.edit(
+        LOGGER(__name__).error(error)
+        return await replymsg.edit(
             f"Something went wrong while processing gdrive link. Make sure that the gdrive link is public and not rate limited. ")
 
 
@@ -236,6 +235,7 @@ async def ddl_screenshot(message, url, time, frame_count, fps, hdr, dv):
     except MessageNotModified:
         pass
     except Exception as error:
+        LOGGER(__name__).error(error)
         return await replymsg.edit(
             f"Something went wrong! make sure that the url is direct download video url.")
 
@@ -307,7 +307,8 @@ async def telegram_screenshot(client, message, frame_count):
     except MessageNotModified:
         pass
     except Exception as error:
-        await replymsg.edit(
+        LOGGER(__name__).error(error)
+        return await replymsg.edit(
             "Something went wrong while generating screenshots from Telegram file.")
 
 
