@@ -95,7 +95,7 @@ async def gdrive_mediainfo(message, url, isRaw):
     except Exception as error:
         LOGGER(__name__).error(error)        
         return await reply_msg.edit(
-            f"Something went wrong while processing Gdrive link.\n\n (Make sure that the gdrive link is not rate limited, is public link and not a folder)")
+            "Something went wrong while processing Gdrive link.\n\n (Make sure that the gdrive link is not rate limited, is public link and not a folder)")
 
 
 async def ddl_mediainfo(message, url, isRaw):
