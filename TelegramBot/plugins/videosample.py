@@ -84,8 +84,8 @@ async def gdrive_videosample(message, url, duration):
         headers = f"Authorization: Bearer {bearer_token}"
 
         total_duration = await async_subprocess(
-            f"ffprobe -headers '{headers}' -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 {file_url}"
-        )
+            f"ffprobe -headers '{headers}' -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 {file_url}")
+        
         total_duration = float(total_duration.strip())
 
         # Generate a random timestamp between first 15-20% of the movie.
@@ -122,8 +122,8 @@ async def ddl_videosample(message, url, duration):
 
         # calculate total duration of the video file.
         total_duration = await async_subprocess(
-            f"ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 {file_url}"
-        )
+            f"ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 {file_url}")
+        
         total_duration = float(total_duration.strip())
 
         # Generate a random timestamp between first 15-20% of the movie.
