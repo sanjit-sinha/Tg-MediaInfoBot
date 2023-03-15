@@ -13,6 +13,7 @@ from pyrogram.types import Message
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
 from TelegramBot.helpers.functions import *
+from TelegramBot.logging import LOGGER
 from TelegramBot.helpers.filters import check_auth
 from TelegramBot.helpers.mediainfo_paste import mediainfo_paste
 from TelegramBot.helpers.gdrivehelper import GoogleDriveHelper
@@ -24,8 +25,7 @@ async def gdrive_mediainfo(message, url, isRaw):
     """
 
     reply_msg = await message.reply_text(
-        "Generating Mediainfo, Please wait...", quote=True
-    )
+        "Generating Mediainfo, Please wait...", quote=True)
     try:
         GD = GoogleDriveHelper()
         metadata = GD.get_metadata(url)
@@ -35,8 +35,7 @@ async def gdrive_mediainfo(message, url, isRaw):
         download_path = f"download/{rand_str}_{file_id}"
 
         service = build(
-            "drive", "v3", cache_discovery=False, credentials=GD.get_credentials()
-        )
+            "drive", "v3", cache_discovery=False, credentials=GD.get_credentials())
         request = service.files().get_media(fileId=file_id)
 
         with open(download_path, "wb") as file:
@@ -65,8 +64,7 @@ async def gdrive_mediainfo(message, url, isRaw):
             ):
                 duration = float(mediainfo_json["media"]["track"][0]["Duration"])
                 bitrate = get_readable_bitrate(
-                    float(metadata["size"]) * 8 / (duration * 1000)
-                )
+                    float(metadata["size"]) * 8 / (duration * 1000))
                 lines[i] = re.sub(r": .+", ": " + bitrate, lines[i])
 
             elif "IsTruncated" in lines[i] or "FileExtension_Invalid" in lines[i]:
@@ -95,10 +93,9 @@ async def gdrive_mediainfo(message, url, isRaw):
         os.remove(f"{download_path}")
 
     except Exception as error:
-        await reply_msg.delete()
-        return await message.reply_text(
-            f"Something went wrong while processing Gdrive link.\n\n (Make sure that the gdrive link is not rate limited, is public link and not a folder)",
-            quote=True)
+        LOGGER(__name__).error(error)        
+        return await reply_msg.edit(
+            f"Something went wrong while processing Gdrive link.\n\n (Make sure that the gdrive link is not rate limited, is public link and not a folder)")
 
 
 async def ddl_mediainfo(message, url, isRaw):
@@ -170,10 +167,9 @@ async def ddl_mediainfo(message, url, isRaw):
         os.remove(f"{download_path}")
 
     except Exception as error:
-        await reply_msg.delete()
-        return await message.reply_text(
-            "Something went wrong while generating Mediainfo from the given url.",
-            quote=True)
+        LOGGER(__name__).error(error)
+        return await reply_msg.edit(
+            "Something went wrong while generating Mediainfo from the given url.")
 
 
 async def telegram_mediainfo(client, message, isRaw):
@@ -269,10 +265,9 @@ async def telegram_mediainfo(client, message, isRaw):
         os.remove(download_path)
 
     except Exception as error:
-        await reply_msg.delete()
-        await message.reply_text(
-            "Something went wrong while generating Mediainfo from replied Telegram file.",
-            quote=True)
+        LOGGER(__name__).error(error)
+        return await reply_msg.edit(
+            "Something went wrong while generating Mediainfo from replied Telegram file.")
 
 
 @Client.on_message(filters.command(["mediainfo", "m"]) & check_auth)
