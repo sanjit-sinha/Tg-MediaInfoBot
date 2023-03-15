@@ -185,7 +185,7 @@ async def gdrive_screenshot(message, url, time, frame_count, fps, hdr, dv):
     except Exception as error:
         LOGGER(__name__).error(error)
         return await replymsg.edit(
-            f"Something went wrong while processing gdrive link. Make sure that the gdrive link is public and not rate limited. ")
+            "Something went wrong while processing gdrive link. Make sure that the gdrive link is public and not rate limited. ")
 
 
 async def ddl_screenshot(message, url, time, frame_count, fps, hdr, dv):
@@ -237,7 +237,7 @@ async def ddl_screenshot(message, url, time, frame_count, fps, hdr, dv):
     except Exception as error:
         LOGGER(__name__).error(error)
         return await replymsg.edit(
-            f"Something went wrong! make sure that the url is direct download video url.")
+            "Something went wrong! make sure that the url is direct download video url.")
 
 
 async def telegram_screenshot(client, message, frame_count):

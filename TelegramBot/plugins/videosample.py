@@ -102,7 +102,7 @@ async def gdrive_videosample(message, url, duration):
     except Exception as error:
         LOGGER(__name__).error(error)
         return await replymsg.edit(
-            f"Something went wrong while processing Gdrive link. Make sure that the link is public and is a proper video file.")
+            "Something went wrong while processing Gdrive link. Make sure that the link is public and is a proper video file.")
 
 
 async def ddl_videosample(message, url, duration):
@@ -140,7 +140,7 @@ async def ddl_videosample(message, url, duration):
     except Exception as error:
         LOGGER(__name__).error(error)
         return await replymsg.edit(
-            f"Something went wrong! Make sure that the URL is direct download video file link.")
+            "Something went wrong! Make sure that the URL is direct download video file link.")
 
 
 async def telegram_videosample(message, client, duration):
