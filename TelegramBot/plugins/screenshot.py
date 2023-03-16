@@ -153,9 +153,9 @@ async def gdrive_screenshot(message, url, time, frame_count, fps, hdr, dv):
         bearer_token = drive.get_bearer_token()
         headers = f"Authorization: Bearer {bearer_token}"
 
-        total_duration = await async_subprocess(
-            f"ffprobe -headers '{headers}' -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 {file_url}")
-        total_duration = float(total_duration.strip())
+        total_duration = await async_subprocess(f"ffprobe -headers '{headers}'  -v quiet -show_format -print_format json {file_url}")  ;print(total_duration,  type(total_duration))
+        ffprobe_data = json.loads(total_duration)
+        total_duration = float(ffprobe_data["format"]["duration"])
 
         # Generate a random timestamp between first 15-20% of the movie.
         timestamp = total_duration * (random.uniform(15, 20) / 100)
@@ -204,9 +204,10 @@ async def ddl_screenshot(message, url, time, frame_count, fps, hdr, dv):
         headers = "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4136.7 Safari/537.36"
 
         # calculate total duration of the video file.
-        total_duration = await async_subprocess(
-            f"ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 {file_url}")
-        total_duration = float(total_duration.strip())
+        total_duration = await async_subprocess(f"ffprobe -v quiet -show_format -print_format json {file_url} ") ; print(total_duration,  type(total_duration))
+        ffprobe_data = json.loads(total_duration)
+        total_duration = float(ffprobe_data["format"]["duration"])
+
 
         # Generate a random timestamp between first 15-20% of the movie.
         timestamp = total_duration * (random.uniform(15, 20) / 100)
@@ -214,9 +215,7 @@ async def ddl_screenshot(message, url, time, frame_count, fps, hdr, dv):
         # check if manual timestamp is valid or not.
         custom_timestamp = check_and_convert_time(time)
         if custom_timestamp:
-            timestamp = (
-                custom_timestamp if custom_timestamp < total_duration else timestamp
-            )
+            timestamp = (custom_timestamp if custom_timestamp < total_duration else timestamp)
 
         # convering final timestamp into HH:MM:SS format
         timestamp = str(datetime.timedelta(seconds=int(timestamp)))
@@ -250,9 +249,7 @@ async def telegram_screenshot(client, message, frame_count):
     try:
         message = message.reply_to_message
         if message.text:
-            return await replymsg.edit(
-                "Reply to a proper video file to generate screenshots."
-            )
+            return await replymsg.edit("Reply to a proper video file to generate screenshots.")
 
         if message.media.value == "video":
             media = message.video
