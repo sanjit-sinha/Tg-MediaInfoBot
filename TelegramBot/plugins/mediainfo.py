@@ -1,8 +1,11 @@
 import re
 import os
 import json
+import httpx
+import asyncio
 import requests
 import subprocess
+from async_timeout import timeout 
 from urllib.parse import unquote
 
 from googleapiclient.discovery import build
@@ -43,8 +46,7 @@ async def gdrive_mediainfo(message, url, isRaw):
             downloader.next_chunk()
 
         mediainfo = await async_subprocess(f"mediainfo {download_path}")
-        mediainfo_json = await async_subprocess(
-            f"mediainfo {download_path} --Output=JSON")
+        mediainfo_json = await async_subprocess(f"mediainfo {download_path} --Output=JSON")
         mediainfo_json = json.loads(mediainfo_json)
 
         filesize = get_readable_bytes(float(metadata["size"]))
@@ -112,12 +114,20 @@ async def ddl_mediainfo(message, url, isRaw):
 
         rand_str = randstr()
         download_path = f"download/{rand_str}_{filename}"
-
-        with requests.get(url, stream=True) as r:
-            with open(download_path, "wb") as f:
-                for chunk in r.iter_content(50000000):
-                    f.write(chunk)
-                    break
+        
+        #initiating Httpx client 
+        client = httpx.AsyncClient()  
+        headers = {"user-agent":"Mozilla/5.0 (Linux; Android 12; 2201116PI) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36"}
+        
+        # Trigger TimeoutError after 15 seconds if download is slow / unsuccessful 
+        async with timeout(15):
+            async with client.stream("GET", url, headers=headers) as response:
+            	# Download 10mb Chunk
+            	async for chunk in response.aiter_bytes(10000000):
+            	    with open(download_path, "wb") as file:
+            	    	file.write(chunk)
+            	    	break
+          
 
         mediainfo = await async_subprocess(f"mediainfo {download_path}")
         mediainfo_json = await async_subprocess(
@@ -166,6 +176,10 @@ async def ddl_mediainfo(message, url, isRaw):
         os.remove(f"{download_path}.txt")
         os.remove(f"{download_path}")
 
+    except asyncio.TimeoutError:
+        return await reply_msg.edit(
+            "Sorry! process failed due to timeout. Your process was taking too long to complete, hence it was cancelled." )
+               	
     except Exception as error:
         LOGGER(__name__).error(error)
         return await reply_msg.edit(
