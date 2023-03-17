@@ -19,11 +19,11 @@ BotStartTime = time.time()
 
 VERSION_ASCII = """
   =============================================================
-  You MUST need to be on python 3.7 or above, shutting down the bot...
+  You MUST need to be on python 3.8 or above, shutting down the bot...
   =============================================================
   """
 
-if sys.version_info[0] < 3 or sys.version_info[1] < 7:
+if sys.version_info[0] < 3 or sys.version_info[1] < 8:
     LOGGER(__name__).critical(VERSION_ASCII)
     sys.exit(1)
 
