@@ -121,7 +121,7 @@ async def ddl_videosample(message, url, duration):
         headers = "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4136.7 Safari/537.36"
 
         # calculate total duration of the video file.
-        total_duration = await async_subprocess(f"ffprobe -v quiet -show_format -print_format json {file_url} ")
+        total_duration = await async_subprocess(f"ffprobe -headers '{headers}' -v quiet -show_format -print_format json {file_url} ")
         ffprobe_data = json.loads(total_duration)
         total_duration = float(ffprobe_data["format"]["duration"])
     
