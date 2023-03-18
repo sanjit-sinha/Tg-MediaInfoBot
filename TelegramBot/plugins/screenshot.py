@@ -183,7 +183,7 @@ async def gdrive_screenshot(message, url, time, frame_count, fps, hdr, dv):
     except MessageNotModified:
         pass
     except Exception as error:
-        LOGGER(__name__).error(error)
+        LOGGER(__name__).error(f"{error}{url}")
         return await replymsg.edit(
             "Something went wrong while processing gdrive link. Make sure that the gdrive link is public and not rate limited. ")
 
@@ -204,7 +204,7 @@ async def ddl_screenshot(message, url, time, frame_count, fps, hdr, dv):
         headers = "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4136.7 Safari/537.36"
 
         # calculate total duration of the video file.
-        total_duration = await async_subprocess(f"ffprobe -v quiet -show_format -print_format json {file_url} ") 
+        total_duration = await async_subprocess(f"ffprobe -headers '{headers}' -v quiet -show_format -print_format json {file_url} ") 
         ffprobe_data = json.loads(total_duration)
         total_duration = float(ffprobe_data["format"]["duration"])
 
@@ -234,7 +234,7 @@ async def ddl_screenshot(message, url, time, frame_count, fps, hdr, dv):
     except MessageNotModified:
         pass
     except Exception as error:
-        LOGGER(__name__).error(error)
+        LOGGER(__name__).error(f"{error}{url}")
         return await replymsg.edit(
             "Something went wrong! make sure that the url is direct download video url.")
 
