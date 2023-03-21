@@ -1,5 +1,4 @@
 import os
-import subprocess
 
 from pyrogram.types import Message
 from pyrogram import filters, Client
@@ -22,7 +21,7 @@ async def generate_spek(_, message: Message):
         return await message.reply_text(
             "Reply to a proper audio file to Generate audio spectrum.", quote=True)
 
-    elif message.media.value == "audio":
+    if message.media.value == "audio":
         media = message.audio
 
     elif message.media.value == "document":
@@ -63,4 +62,3 @@ async def generate_spek(_, message: Message):
     await replymsg.delete()
     os.remove(f"download/{file_name}")
     os.remove(f"download/{file_name}.png")
-    return
