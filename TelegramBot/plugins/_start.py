@@ -32,23 +32,19 @@ async def botCallbacks(_, CallbackQuery):
 
     if clicker_user_id != user_id:
         return await CallbackQuery.answer(
-            "This command is not initiated by you.", warn=True
-        )
+            "This command is not initiated by you.", warn=True)
 
     if CallbackQuery.data == "ABOUT_BUTTON":
         await CallbackQuery.edit_message_text(
-            ABOUT_CAPTION, reply_markup=InlineKeyboardMarkup(GOBACK_1_BUTTON)
-        )
+            ABOUT_CAPTION, reply_markup=InlineKeyboardMarkup(GOBACK_1_BUTTON))
 
     elif CallbackQuery.data == "START_BUTTON":
         await CallbackQuery.edit_message_text(
-            START_CAPTION, reply_markup=InlineKeyboardMarkup(START_BUTTON)
-        )
+            START_CAPTION, reply_markup=InlineKeyboardMarkup(START_BUTTON))
 
     elif CallbackQuery.data == "COMMAND_BUTTON":
         await CallbackQuery.edit_message_text(
-            COMMAND_TEXT, reply_markup=InlineKeyboardMarkup(GOBACK_1_BUTTON)
-        )
+            COMMAND_TEXT, reply_markup=InlineKeyboardMarkup(GOBACK_1_BUTTON))
 
 
 @Client.on_message(filters.command(["start", "help"]))
