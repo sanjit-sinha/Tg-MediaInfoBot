@@ -1,64 +1,59 @@
 import os
 
+from pyrogram import filters
 from pyrogram.types import Message
-from pyrogram import filters, Client
 
+from TelegramBot import bot
 from TelegramBot.helpers.filters import check_auth
 from TelegramBot.helpers.functions import async_subprocess
 from TelegramBot.helpers.pasting_services import telegraph_image_paste
 
 
-@Client.on_message(filters.command(["spek", "sox"]) & check_auth)
+@bot.on_message(filters.command(["spek", "sox"]) & check_auth)
 async def generate_spek(_, message: Message):
-    """Generate spectrogram of music file using sox tool."""
+    """Generate spectrogram of telegram music file using sox tool."""
 
-    if not message.reply_to_message:
-        return await message.reply_text(
-            "Reply to a proper audio file to Generate audio spectrum.", quote=True)
+    replymsg = await message.reply_text("Generating Spectrogram of the audio. Please wait ...", quote=True)
 
+    # Filtering only valid audio files.
     message = message.reply_to_message
-    if message.text:
-        return await message.reply_text(
-            "Reply to a proper audio file to Generate audio spectrum.", quote=True)
+    if not message or message.text:
+        return await replymsg.edit("Reply to a proper audio file to Generate audio spectrum.")
 
-    if message.media.value == "audio":
-        media = message.audio
-
-    elif message.media.value == "document":
-        media = message.document
+    if message.media.value in ["audio", "document"]:
+        media = getattr(message, message.media.value)
 
     else:
-        return await message.reply_text(
-            "Can only generate spectrum from audio file....", quote=True)
+        return await replymsg.edit("Can only generate spectrum from audio file...")
 
-    file_name = str(media.file_name)
-    mime = media.mime_type
+    filename = str(media.file_name)
+    mime = (media.mime_type).lower()
+
     if message.media.value == "document" and "audio" not in mime:
-        return await message.reply_text(
-            "Can only generate spectrum from audio file....", quote=True)
+        return await replymsg.edit("Can only generate spectrum from audio file...")
 
-    replymsg = await message.reply_text(
-        "Generating Spectrogram of the audio. Please wait...", quote=True)
-    await message.download(os.path.join(os.getcwd(), "download", file_name))
+    # Downloading the audio file in download folder.
+    filepath = f"download/{filename}"
+    await message.download(os.path.join(os.getcwd(), "download", filename))
 
-    if "m4a" in mime.lower() or "audio/mp4" in mime.lower():
-        await async_subprocess(
-            f"ffmpeg -i 'download/{file_name}' -f flac 'download/{file_name}.flac'")
-        await async_subprocess(
-            f"sox 'download/{file_name}.flac' -n remix 1 spectrogram -x 1000  -y 513 -z 120 -w Kaiser -o 'download/{file_name}.png'")
-        os.remove(f"download/{file_name}.flac")
+    # Creating spectrogram of audio file.
+    if "m4a" in mime or "audio/mp4" in mime:
+        await async_subprocess(f"ffmpeg -i '{filepath}' -f flac '{filepath}.flac'")
+        await async_subprocess(f"sox '{filepath}.flac' -n remix 1 spectrogram -x 1000  -y 513 -z 120 -w Kaiser -o '{filepath}.png'")
+
+        os.remove(f"{filepath}.flac")
 
     else:
-        await async_subprocess(
-            f"sox 'download/{file_name}' -n remix 1 spectrogram -x 1000 -y 513 -z 120 -w Kaiser -o 'download/{file_name}.png'")
+        await async_subprocess(f"sox '{filepath}' -n remix 1 spectrogram -x 1000 -y 513 -z 120 -w Kaiser -o '{filepath}.png'")
 
-    if not os.path.exists(f"download/{file_name}.png"):
-        return await replymsg.edit(
-            "Can not able to generate spectograph of given audio.")
+    if not os.path.exists(f"{filepath}.png"):
+        return await replymsg.edit("Can not able to generate spectograph of given audio.")
 
-    image_url = await telegraph_image_paste(f"download/{file_name}.png")
-    await message.reply_text(f"[{file_name}]({image_url})", quote=True)
-
+    # Pasting the spectrogram image to telegraph.
+    image_url = await telegraph_image_paste(f"{filepath}.png")
+    await message.reply_text(f"[{filename}]({image_url})", quote=True)
     await replymsg.delete()
-    os.remove(f"download/{file_name}")
-    os.remove(f"download/{file_name}.png")
+
+    # Removing the downloaded files from the server.
+    os.remove(filepath)
+    os.remove(f"{filepath}.png")
