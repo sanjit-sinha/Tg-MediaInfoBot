@@ -41,7 +41,7 @@ async def paste(_, message: Message):
         return await paste_reply.edit(paste_usage)
 
     output = await katbin_paste(content)
-    button = [[InlineKeyboardButton(text="Paste Link 🔗", url=output)]]
+    button = [[InlineKeyboardButton(text="Paste Link  🔗", url=output)]]
 
     return await paste_reply.edit(
         text=output,
