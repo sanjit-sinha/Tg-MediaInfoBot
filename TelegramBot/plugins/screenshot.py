@@ -308,7 +308,7 @@ async def screenshot_callback(client: Client, callbackquery: CallbackQuery):
     return await message.reply_text("This type of link is not supported.", quote=True)
 
 
-@Client.on_message(filters.command(["screenshot", "ss"]) & check_auth)
+@bot.on_message(filters.command(["screenshot", "ss"]) & check_auth)
 async def screenshot(client: Client, message: Message):
     """Generates Screenshots from ddl, gdrive or Telegram files."""
     
