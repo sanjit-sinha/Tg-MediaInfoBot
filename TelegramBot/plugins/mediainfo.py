@@ -138,7 +138,7 @@ async def ddl_mediainfo(message: Message, url: str, isRaw: bool):
             "Something went wrong while generating Mediainfo from the given url.")
 
 
-async def telegram_mediainfo(message, isRaw):
+async def telegram_mediainfo(message: Message, isRaw: bool):
     """Generates Mediainfo from a Telegram File."""
 
     reply_msg = await message.reply_text("Generating Mediainfo, Please wait ...", quote=True)
@@ -158,14 +158,17 @@ async def telegram_mediainfo(message, isRaw):
         filename = str(media.file_name)
         filesize = media.file_size
 
+        # Creating Temporary file to store downloaded chunk.
         with tempfile.NamedTemporaryFile(suffix=f"_{filename}", dir="download") as download_path:
             async for chunk in bot.stream_media(message, limit=5):
                 with open(download_path.name, "ab") as file:
                     file.write(chunk)
 
+            # mediainfo from chunk.
             mediainfo = await async_subprocess(f"mediainfo '{download_path.name}'")
             mediainfo_json = json.loads(await async_subprocess(f"mediainfo '{download_path.name}' --Output=JSON"))
 
+        # Modify mediainfo output for correct filename, filesize, bitrate, etc.
         readable_size = get_readable_bytes(filesize)
         lines = mediainfo.splitlines()
         for i in range(len(lines)):
