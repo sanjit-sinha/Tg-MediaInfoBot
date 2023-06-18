@@ -1,16 +1,16 @@
-import sys, os
+import os
+import sys
+from pyrogram import filters
 from pyrogram.types import Message
-from pyrogram import Client, filters
 
+from TelegramBot import bot
 from TelegramBot.logging import LOGGER
 from TelegramBot.helpers.filters import sudo_cmd
 
 
-@Client.on_message(filters.command(["update", "gitpull"]) & sudo_cmd)
+@bot.on_message(filters.command(["update", "gitpull"]) & sudo_cmd)
 async def update(_, message: Message):
-    """
-    Update the bot with the latest commit changes from GitHub.
-    """
+    """Update the bot with the latest commit changes from GitHub."""
 
     msg = await message.reply_text("Pulling changes with latest commits...", quote=True)
     os.system("git pull")
@@ -19,18 +19,26 @@ async def update(_, message: Message):
     os.execl(sys.executable, sys.executable, "-m", "TelegramBot")
 
 
-@Client.on_message(filters.command(["log", "logs"]) & sudo_cmd)
-async def log(client: Client, message: Message):
-    """
-    upload log file of the bot in telegram.
-    """
+@bot.on_message(filters.command("restart") & sudo_cmd)
+async def restart(_, message: Message):
+    """Just Restart the bot and update the bot with local changes."""
+
+    LOGGER(__name__).info("Restarting the bot. shutting down this instance")
+    await message.reply_text(
+        "Starting a new instance and shutting down this one...", quote=True)
+    os.execl(sys.executable, sys.executable, "-m", "TelegramBot")
+
+
+@bot.on_message(filters.command(["log", "logs"]) & sudo_cmd)
+async def log(_, message: Message):
+    """upload log file of the bot in telegram."""
 
     try:
-        await client.send_document(
+        await bot.send_document(
             message.chat.id,
             "logs.txt",
             caption="logs.txt",
             reply_to_message_id=message.id)
 
     except Exception as error:
-        await message.reply_text(f"{error}", quote=True)
+        await message.reply_text(error, quote=True)
