@@ -35,7 +35,7 @@ async def send_mediainfo(reply_msg: Message, mediainfo: str, filename: str, isRa
     return await reply_msg.edit(f"**{filename}**", reply_markup=button)
 
 
-async def gdrive_mediainfo(message: Message, url: str, isRaw: bool):
+async def gdrive_mediainfo(message: Message, url: str, isRaw: bool) -> None:
     """Generates Mediainfo from a Google Drive file."""
 
     reply_msg = await message.reply_text("Generating Mediainfo, Please wait ...", quote=True)
@@ -66,7 +66,7 @@ async def gdrive_mediainfo(message: Message, url: str, isRaw: bool):
             "Something went wrong while processing the Gdrive link.\n\n (Make sure that the gdrive link is not rate-limited, is a public link, and not a folder)")
 
 
-async def ddl_mediainfo(message: Message, url: str, isRaw: bool):
+async def ddl_mediainfo(message: Message, url: str, isRaw: bool) -> None:
     """Generates Mediainfo from a Direct Download Link."""
 
     reply_msg = await message.reply_text("Generating Mediainfo, Please wait ...", quote=True)
@@ -138,7 +138,7 @@ async def ddl_mediainfo(message: Message, url: str, isRaw: bool):
             "Something went wrong while generating Mediainfo from the given url.")
 
 
-async def telegram_mediainfo(message: Message, isRaw: bool):
+async def telegram_mediainfo(message: Message, isRaw: bool) -> None:
     """Generates Mediainfo from a Telegram File."""
 
     reply_msg = await message.reply_text("Generating Mediainfo, Please wait ...", quote=True)
