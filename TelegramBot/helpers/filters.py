@@ -4,10 +4,7 @@ from TelegramBot.config import SUDO_USERID, AUTHORIZED_CHATS
 
 
 def authorized(_, __, message: Message) -> bool:
-    """
-    returns True if message is from sudo user or authorized chat,
-    False otherwise.
-    """
+    """Returns True if message is from sudo user or authorized chat,False otherwise."""
 
     if not message.from_user:
         return False
@@ -22,16 +19,9 @@ def authorized(_, __, message: Message) -> bool:
 
 
 def sudo_users(_, __, message: Message) -> bool:
-    """
-    returns True if message is from sudo user, False otherwise.
-    """
+    """returns True if message is from sudo user, False otherwise."""
 
-    if not message.from_user:
-        return False
-    if message.from_user.id in SUDO_USERID:
-        return True
-
-    return False
+    return True if message.from_user.id in SUDO_USERID else False
 
 
 check_auth = filters.create(authorized)
