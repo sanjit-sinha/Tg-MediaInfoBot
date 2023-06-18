@@ -123,8 +123,6 @@ async def ddl_mediainfo(message: Message, url: str, isRaw: bool) -> None:
             elif "IsTruncated" in lines[i] or "FileExtension_Invalid" in lines[i]:
                 lines[i] = ""
 
-            remove_N(lines)
-
         mediainfo = "\n".join(lines)
         return await send_mediainfo(reply_msg, mediainfo, filename, isRaw)
 
@@ -143,17 +141,16 @@ async def telegram_mediainfo(message: Message, isRaw: bool) -> None:
 
     reply_msg = await message.reply_text("Generating Mediainfo, Please wait ...", quote=True)
     try:
+        # Filtering out unsupported media types.
         message = message.reply_to_message
         if message.text:
-            return await message.reply_text(
-                "Reply to a proper media file for generating Mediainfo.**", quote=True)
+            return await reply_msg.edit("Reply to a proper media file for generating Mediainfo.**", quote=True)
 
         if message.media.value in ["video", "audio", "document", "voice"]:
             media = getattr(message, message.media.value)
 
         else:
-            return await reply_msg.edit(
-                "This type of media is not supported for generating Mediainfo.")
+            return await reply_msg.edit("This type of media is not supported for generating Mediainfo.")
 
         filename = str(media.file_name)
         filesize = media.file_size
