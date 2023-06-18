@@ -119,7 +119,8 @@ async def gdrive_screenshot(message, url, time, frame_count, fps, hdr, upload_me
         await generate_ss_from_link(
             message, replymsg, file_url, headers, filename, frame_count, fps, hdr, timestamp, upload_medium)
 
-    except MessageNotModified: pass
+    except MessageNotModified:
+        pass
     except Exception as error:
         LOGGER(__name__).error(f"{error}\n{url}")
         return await message.reply_text(
@@ -153,7 +154,7 @@ async def ddl_screenshot(message, url, time, frame_count, fps, hdr, upload_mediu
         # check if manual timestamp is valid or not.
         custom_timestamp = check_and_convert_time(time)
         if custom_timestamp:
-            timestamp = (custom_timestamp if custom_timestamp <  total_duration else timestamp)
+            timestamp = (custom_timestamp if custom_timestamp < total_duration else timestamp)
 
         # converting final timestamp into HH:MM:SS format
         timestamp = str(datetime.timedelta(seconds=int(timestamp)))
@@ -161,7 +162,8 @@ async def ddl_screenshot(message, url, time, frame_count, fps, hdr, upload_mediu
         await generate_ss_from_link(
             message, replymsg, file_url, headers, filename, frame_count, fps, hdr, timestamp, upload_medium)
 
-    except MessageNotModified: pass
+    except MessageNotModified:
+        pass
     except Exception as error:
         LOGGER(__name__).error(f"{error}\n{url}")
         return await message.reply_text(
@@ -235,7 +237,8 @@ async def telegram_screenshot(message, frame_count, upload_medium):
                 await replymsg.delete()
                 await upload_screenshots(upload_medium, message, filename, temp_dir)
 
-    except MessageNotModified: pass
+    except MessageNotModified:
+        pass
     except Exception as error:
         LOGGER(__name__).error(error)
         return await replymsg.edit(
@@ -311,10 +314,10 @@ async def screenshot_callback(client: Client, callbackquery: CallbackQuery):
 @bot.on_message(filters.command(["screenshot", "ss"]) & check_auth)
 async def screenshot(client: Client, message: Message):
     """Generates Screenshots from ddl, gdrive or Telegram files."""
-    
+
     upload_choose_button = [
         [
-            InlineKeyboardButton("Telegram (Photo)",callback_data="screenshot_photo"),
+            InlineKeyboardButton("Telegram (Photo)", callback_data="screenshot_photo"),
             InlineKeyboardButton("Telegram (File)", callback_data="screenshot_file"),
         ],
         [
