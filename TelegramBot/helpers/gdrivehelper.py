@@ -19,9 +19,7 @@ class GoogleDriveHelper:
 
     @staticmethod
     def is_gdrive_link(gdrive_url: str) -> bool:
-        """
-        Check if the given link is valid Google Drive link or not.
-        """
+        """Check if the given link is valid Google Drive link or not."""
 
         pattern = "https?://(drive\.google\.com\/)\S+"
         if re.search(pattern, gdrive_url):
@@ -31,18 +29,13 @@ class GoogleDriveHelper:
 
     @staticmethod
     def is_gdrive_folder(gdrive_url: str) -> bool:
-        """
-        Check if the given Google Drive url is folder or not.
-        """
+        """Check if the given Google Drive url is folder or not."""
 
-        value = bool("folders" in gdrive_url)
-        return value
+        return bool("folders" in gdrive_url)
 
     @staticmethod
     def get_id(gdrive_url: str) -> str:
-        """
-        Extract Google Drive ID from the the Google Drive URL.
-        """
+        """Extract Google Drive ID from the the Google Drive URL."""
 
         try:
             file_id = re.search(r"([-\w]{25,})", gdrive_url).group(0)
@@ -51,12 +44,9 @@ class GoogleDriveHelper:
             raise GdriveHelperException("Drive ID not found") from error
 
     def get_credentials(self):
-        """
-        Generate credentials from token.json
-        """
+        """Generate credentials from token.json"""
 
         credentials = None
-
         if not os.path.exists(self.GDRIVE_TOKEN_FILE):
             raise GdriveHelperException("token.json not found")
 
@@ -75,22 +65,23 @@ class GoogleDriveHelper:
         return credentials
 
     def get_metadata(self, gdrive_url):
-        """
-        Return the  metadata of the given Google Drive File url.
-        """
+        """Return the  metadata of the given Google Drive File url."""
 
         credentials = self.get_credentials()
         file_id = self.get_id(gdrive_url)
 
         try:
-            service = build(
-                "drive", "v3", cache_discovery=False, credentials=credentials)
+            service = build("drive", "v3", cache_discovery=False,
+                            credentials=credentials)
             metadata = (
                 service.files()
                 .get(
                     fileId=file_id,
                     fields="name, size, mimeType",
-                    supportsAllDrives=True).execute())
+                    supportsAllDrives=True,
+                )
+                .execute()
+            )
 
         except HttpError as error:
             raise GdriveHelperException(error.reason) from error
@@ -108,5 +99,4 @@ class GoogleDriveHelper:
     def get_ddl_link(self, gdrive_link):
         file_id = self.get_id(gdrive_link)
         ddl_link = f"https://www.googleapis.com/drive/v3/files/{file_id}\?supportsAllDrives\=true\&alt\=media"
-        # "https://www.googleapis.com/drive/v3/files/{file_id}?supportsAllDrives\=true&alt=media"
         return ddl_link
