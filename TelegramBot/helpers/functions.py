@@ -1,17 +1,12 @@
 import os
 import shlex
-import string
 import shutil
-import random
 import asyncio
-import subprocess
 from typing import Union
 
 
 def get_readable_time(seconds: int) -> str:
-    """
-    Return a human-readable time format
-    """
+    """Return a human-readable time format"""
 
     result = ""
     (days, remainder) = divmod(seconds, 86400)
@@ -36,9 +31,7 @@ def get_readable_time(seconds: int) -> str:
 
 
 def get_readable_bytes(size: Union[int, str]) -> str:
-    """
-    Return a human readable file size from bytes.
-    """
+    """Return a human readable file size from bytes."""
 
     UNIT_SUFFIXES = ["B", "KiB", "MiB", "GiB", "TiB"]
 
@@ -59,9 +52,7 @@ def get_readable_bytes(size: Union[int, str]) -> str:
 
 
 def get_readable_bitrate(bitrate_kbps):
-    """
-    Return a human-readable bitrate size.
-    """
+    """Return a human-readable bitrate size."""
 
     if bitrate_kbps > 10000:
         bitrate = str(round(bitrate_kbps / 1000, 2)) + " " + "Mb/s"
@@ -72,9 +63,7 @@ def get_readable_bitrate(bitrate_kbps):
 
 
 def remove_N(seq):
-    """
-    Remove consecutive duplicates from the input sequence.
-    """
+    """Remove consecutive duplicates from the input sequence."""
 
     i = 1
     while i < len(seq):
@@ -112,15 +101,6 @@ def check_and_convert_time(time: str):
         return False
 
 
-def randstr(length=7):
-    """
-    Generate a random string of lowercase letters and digits with the specified length.
-    The default length is 7.
-    """
-
-    return "".join(random.choices(string.ascii_lowercase + string.digits, k=length))
-
-
 async def async_subprocess(command: str) -> str:
     """
     Asynchronously run a shell command and return its output as a string.
@@ -130,13 +110,11 @@ async def async_subprocess(command: str) -> str:
 
     Returns:
         str: The output of the shell command, including stdout and stderr.
-
     """
 
     args = shlex.split(command)
     process = await asyncio.create_subprocess_exec(
-        *args, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-    )
+        *args, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
 
     stdout, stderr = await process.communicate()
     return str(stdout.decode().strip()) + str(stderr.decode().strip())
