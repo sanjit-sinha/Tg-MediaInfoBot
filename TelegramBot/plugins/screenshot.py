@@ -261,7 +261,7 @@ screenshot_help = """Generates screenshots from Google Drive links, Telegram fil
 
 
 @bot.on_callback_query(filters.regex("screenshot_"))
-async def callback_screenshot(client: Client, callbackquery: CallbackQuery):
+async def screenshot_callback(client: Client, callbackquery: CallbackQuery):
     """Generates Screenshots from ddl, gdrive or Telegram files."""
 
     upload_medium = callbackquery.data.split("_")[1]
@@ -308,8 +308,10 @@ async def callback_screenshot(client: Client, callbackquery: CallbackQuery):
     return await message.reply_text("This type of link is not supported.", quote=True)
 
 
-@Client.on_message(filters.command(["screenshots", "ss"]) & check_auth)
+@Client.on_message(filters.command(["screenshot", "ss"]) & check_auth)
 async def screenshot(client: Client, message: Message):
+    """Generates Screenshots from ddl, gdrive or Telegram files."""
+    
     upload_choose_button = [
         [
             InlineKeyboardButton("Telegram (Photo)",callback_data="screenshot_photo"),
